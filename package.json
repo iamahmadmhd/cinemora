@@ -1,27 +1,38 @@
 {
-  "name": "cinemora",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.2.4"
-  },
-  "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.2.4",
-    "@eslint/eslintrc": "^3"
-  }
+    "name": "cinemora",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "prettier:check": "prettier --check **/*.{ts,tsx,json,md,css}",
+        "prettier:write": "prettier --write **/*.{ts,tsx,json,md,css}"
+    },
+    "dependencies": {
+        "@fontsource-variable/open-sans": "^5.2.5",
+        "@heroui/react": "^2.7.6-beta.2",
+        "clsx": "^2.1.1",
+        "framer-motion": "^12.6.2",
+        "lucide-react": "^0.486.0",
+        "next": "15.2.4",
+        "next-themes": "^0.4.6",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "tailwind-merge": "^3.1.0"
+    },
+    "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "15.2.4",
+        "eslint-config-prettier": "^10.1.1",
+        "prettier": "3.5.3",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+    }
 }

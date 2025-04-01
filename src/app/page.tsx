@@ -1,6 +1,8 @@
 import { Header, HeaderContentProps } from '@/components/header';
+import { EmblaCarousel } from '@/components/trending';
 import { Button } from '@heroui/button';
 import { Link } from '@heroui/link';
+import { EmblaOptionsType } from 'embla-carousel';
 import NextLink from 'next/link';
 
 const headerContent: HeaderContentProps = {
@@ -33,12 +35,26 @@ const headerContent: HeaderContentProps = {
     ),
 };
 
+const OPTIONS: EmblaOptionsType = {
+    align: 'start',
+    dragFree: true,
+    loop: true,
+};
+
+const SLIDE_COUNT = 5;
+const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
+
 export default function Home() {
     return (
         <>
             <Header content={headerContent} />
             <main className='h-[300vh]'>
-                <div className='container max-w-4xl mx-auto pt-80 grid grid-cols-3 gap-2 text-background'></div>
+                <div className='container max-w-[1024px] mx-auto pt-80 px-6'>
+                    <EmblaCarousel
+                        slides={SLIDES}
+                        options={OPTIONS}
+                    />
+                </div>
             </main>
         </>
     );

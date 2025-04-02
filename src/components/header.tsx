@@ -29,7 +29,7 @@ interface HeaderProps {
     props?: ComponentProps<'nav'>;
 }
 
-function Header({ content, className, ...props }: HeaderProps) {
+const Header: React.FC<HeaderProps> = ({ content, className, ...props }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -83,6 +83,6 @@ function Header({ content, className, ...props }: HeaderProps) {
             )}
         </Navbar>
     );
-}
+};
 
 export { type NavItem, type HeaderContentProps, type HeaderProps, Header };

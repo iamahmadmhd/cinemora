@@ -4,250 +4,59 @@ import { Card, CardBody } from '@heroui/card';
 import { Image } from '@heroui/image';
 import { Chip } from '@heroui/chip';
 import NextLink from 'next/link';
-import { useEffect, useState } from 'react';
 import { EmblaOptionsType } from 'embla-carousel';
-import { DotButton, useDotButton } from './ui/EmblaCarouselDotButton';
-import {
-    PrevButton,
-    NextButton,
-    usePrevNextButtons,
-} from './ui/EmblaCarouselArrowButtons';
-import useEmblaCarousel from 'embla-carousel-react';
+import { Carousel } from '@/ui/carousel';
+import { fetchTrendingMedia, ITrendingMedia } from '@/app/actions';
+import useSWR from 'swr';
 
 enum MediaType {
     movie = 'Movie',
-    tv = 'TV'
-}
-
-interface BaseMedia {
-    backdrop_path: string;
-    id: number;
-    overview: string;
-    poster_path: string;
-    adult: boolean;
-    original_language: string;
-    genre_ids: number[];
-    popularity: number;
-    vote_average: number;
-    vote_count: number;
-}
-
-interface Movie extends BaseMedia {
-    title: string;
-    original_title: string;
-    release_date: string;
-    video: boolean;
-    media_type: 'movie';
-}
-
-interface TVShow extends BaseMedia {
-    name: string;
-    original_name: string;
-    first_air_date: string;
-    origin_country: string[];
-    media_type: 'tv';
-}
-
-type Media = Movie | TVShow;
-
-interface ApiResponse {
-    page: number;
-    results: Media[];
+    tv = 'TV',
 }
 
 type PropType = {
-    slides: number[];
-    options?: EmblaOptionsType;
+    options: EmblaOptionsType;
 };
 
-const fetchGenres = async (): Promise<Record<number, string>> => {
-    const url = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/genre/movie/list`;
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_TOKEN}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-    if (!response.ok) {
-        throw new Error('Failed to fetch genres');
-    }
-
-    const data = await response.json();
-    return data.genres.reduce(
-        (acc: Record<number, string>, genre: { id: number; name: string }) => {
-            acc[genre.id] = genre.name;
-            return acc;
-        },
-        {}
+const MediaSlider: React.FC<PropType> = ({ options }) => {
+    const { data, error, isLoading } = useSWR(
+        'trending-media',
+        fetchTrendingMedia
     );
-};
-
-const fetchTrendingMedia = async (): Promise<Media[]> => {
-    const url = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/trending/all/day`;
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_TOKEN}`,
-        },
-    };
-
-    const response = await fetch(url, options);
-    if (!response.ok) {
-        throw new Error('Failed to fetch trending media');
-    }
-
-    const data: ApiResponse = await response.json();
-    return data.results;
-};
-
-function Trending() {
-    const [movies, setMovies] = useState<Media[]>([]);
-    const [genres, setGenres] = useState<Record<number, string>>({});
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        Promise.all([fetchTrendingMedia(), fetchGenres()])
-            .then(([movies, genres]) => {
-                setMovies(movies);
-                setGenres(genres);
-            })
-            .catch((err) => setError(err.message));
-    }, []);
 
     if (error) {
-        return <p className='text-red-500'>Error: {error}</p>;
+        return <p className='text-red-500'>Error: {error.message}</p>;
+    }
+
+    if (!isLoading && !data) {
+        return <p className='text-red-500'>No data found</p>;
     }
 
     return (
         <div className='flex flex-col gap-8'>
             <h2 className='text-2xl font-bold'>Trending</h2>
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-                {movies.length > 0 ? (
-                    movies.map((media) => (
-                        <MovieCard
-                            key={media.id}
-                            media={media}
-                            genres={genres}
-                        />
-                    ))
-                ) : (
-                    <p>Loading...</p>
-                )}
-            </div>
-        </div>
-    );
-}
-
-const EmblaCarousel: React.FC<PropType> = (props) => {
-    const { slides, options } = props;
-    const [emblaRef, emblaApi] = useEmblaCarousel(options);
-    const [movies, setMovies] = useState<Media[]>([]);
-    const [genres, setGenres] = useState<Record<number, string>>({});
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        Promise.all([fetchTrendingMedia(), fetchGenres()])
-            .then(([movies, genres]) => {
-                setMovies(movies);
-                setGenres(genres);
-            })
-            .catch((err) => setError(err.message));
-    }, []);
-
-    const { selectedIndex, scrollSnaps, onDotButtonClick } =
-        useDotButton(emblaApi);
-
-    const {
-        prevBtnDisabled,
-        nextBtnDisabled,
-        onPrevButtonClick,
-        onNextButtonClick,
-    } = usePrevNextButtons(emblaApi);
-
-    if (error) {
-        return <p className='text-red-500'>Error: {error}</p>;
-    }
-
-    return (
-        <div className='flex flex-col gap-8'>
-            <h2 className='text-2xl font-bold'>Trending</h2>
-            <div>
-                <div
-                    className='embla__viewport'
-                    ref={emblaRef}
-                >
-                    <div className='flex -ml-4 touch-pan-y touch-pinch-zoom snap-x'>
-                        {movies.length > 0 ? (
-                            movies.map((media) => (
-                                <div
-                                    key={media.id}
-                                    className='flex-[0_0_50%] md:flex-[0_0_25%] pl-4 snap-start'
-                                >
-                                    <MovieCard
-                                        media={media}
-                                        genres={genres}
-                                    />
-                                </div>
-                            ))
-                        ) : (
-                            <p>Loading...</p>
-                        )}
+            <Carousel
+                loading={isLoading}
+                options={options}
+            >
+                {data?.map((media) => (
+                    <div
+                        key={media.id}
+                        className='flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%] pl-4 snap-start'
+                    >
+                        <MovieCard content={media} />
                     </div>
-                </div>
-
-                <div className='embla__controls'>
-                    <div className='embla__buttons'>
-                        <PrevButton
-                            onClick={onPrevButtonClick}
-                            disabled={prevBtnDisabled}
-                        />
-                        <NextButton
-                            onClick={onNextButtonClick}
-                            disabled={nextBtnDisabled}
-                        />
-                    </div>
-
-                    <div className='embla__dots'>
-                        {scrollSnaps.map((_, index) => (
-                            <DotButton
-                                key={index}
-                                onClick={() => onDotButtonClick(index)}
-                                className={'embla__dot'.concat(
-                                    index === selectedIndex
-                                        ? ' embla__dot--selected'
-                                        : ''
-                                )}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </div>
+                ))}
+            </Carousel>
         </div>
     );
 };
 
-const MovieCard = ({
-    media,
-    genres,
-}: {
-    media: Media;
-    genres: Record<number, string>;
-}) => {
-    const title = media.media_type === 'movie' ? media.title : media.name;
-    const overview = media.overview.substring(0, 120).concat('...');
-    const mediaType = media.media_type;
-    const genreNames = media.genre_ids.map((id) => genres[id] || 'Unknown');
-    const imageUrl = `https://media.themoviedb.org/t/p/w342${media.poster_path}`;
+const MovieCard = ({ content }: { content: ITrendingMedia }) => {
+    const { title, imageUrl, genres, overview, href } = content;
 
     return (
-        <Card
-            isFooterBlurred
-            className='w-full overflow-hidden aspect-[2/3] group'
-        >
+        <Card className='w-full overflow-hidden aspect-[2/3] group'>
             <Image
                 removeWrapper
                 alt={title}
@@ -255,15 +64,15 @@ const MovieCard = ({
                 src={imageUrl}
                 loading='lazy'
             />
-            <CardBody className='absolute flex-col items-start gap-3 backdrop-blur-xl bg-black/80 supports-backdrop-filter:bg-black/40 transition-normal duration-400 ease-in top-0 bottom-0 z-10 p-6 opacity-0 group-hover:opacity-100'>
+            <CardBody className='absolute flex-col items-start gap-3 backdrop-blur-2xl bg-black/80 supports-backdrop-filter:bg-black/40 transition-normal duration-400 ease-in top-0 bottom-0 z-10 p-6 opacity-0 group-hover:opacity-100'>
                 <div className='flex flex-wrap items-start gap-1'>
                     <Chip
                         size='sm'
                         color='primary'
                     >
-                        {MediaType[mediaType]}
+                        {MediaType[content.mediaType]}
                     </Chip>
-                    {genreNames.map((name, index) => (
+                    {genres.map((name, index) => (
                         <Chip
                             key={index}
                             size='sm'
@@ -275,7 +84,7 @@ const MovieCard = ({
                 </div>
                 <div className='flex flex-col gap-1'>
                     <NextLink
-                        href={`/details/${media.id}`}
+                        href={href}
                         className='text-lg font-medium text-white'
                     >
                         <span className='absolute inset-0' />
@@ -291,4 +100,4 @@ const MovieCard = ({
     );
 };
 
-export { Trending, EmblaCarousel };
+export { MediaSlider };

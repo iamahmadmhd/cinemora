@@ -3,9 +3,7 @@ import { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Card } from '@heroui/card';
 import { Skeleton } from '@heroui/skeleton';
-import { Progress } from '@heroui/progress';
-import { Button, ButtonProps } from '@heroui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronsLeftRightEllipsis } from 'lucide-react';
 import { cn } from '@/utils/classname';
 
 type UsePrevNextButtonsType = {
@@ -97,34 +95,6 @@ const useDotButton = (
     };
 };
 
-const PrevButton: React.FC<ButtonProps> = ({ children, ...props }) => {
-    return (
-        <Button
-            variant='light'
-            color='primary'
-            isIconOnly
-            {...props}
-        >
-            <ChevronLeft />
-            {children}
-        </Button>
-    );
-};
-
-const NextButton: React.FC<ButtonProps> = ({ children, ...props }) => {
-    return (
-        <Button
-            variant='light'
-            color='primary'
-            isIconOnly
-            {...props}
-        >
-            <ChevronRight />
-            {children}
-        </Button>
-    );
-};
-
 interface CarouselProps {
     options: EmblaOptionsType;
     loading: boolean;
@@ -134,15 +104,7 @@ interface CarouselProps {
 
 const Carousel: React.FC<CarouselProps> = (props) => {
     const { options, loading, className, children } = props;
-    const [emblaRef, emblaApi] = useEmblaCarousel(options);
-
-    const { selectedIndex, scrollSnaps } = useDotButton(emblaApi);
-    const {
-        prevBtnDisabled,
-        nextBtnDisabled,
-        onPrevButtonClick,
-        onNextButtonClick,
-    } = usePrevNextButtons(emblaApi);
+    const [emblaRef] = useEmblaCarousel(options);
 
     return (
         <div className={cn(className)}>
@@ -151,7 +113,11 @@ const Carousel: React.FC<CarouselProps> = (props) => {
                 ref={emblaRef}
             >
                 <div className='flex -ml-4 touch-pan-y touch-pinch-zoom snap-x'>
-                    {[...(loading ? [1, 2, 3, 4] : React.Children.toArray(children))].map((item, index) => (
+                    {[
+                        ...(loading
+                            ? [1, 2, 3, 4, 5]
+                            : React.Children.toArray(children)),
+                    ].map((item, index) => (
                         <div
                             key={index}
                             className='flex-[0_0_50%] md:flex-[0_0_33.3333%] lg:flex-[0_0_20%] pl-4 snap-start'
@@ -171,21 +137,11 @@ const Carousel: React.FC<CarouselProps> = (props) => {
                 </div>
             </div>
 
-            <div className='hidden lg:flex container max-w-[1024px] mx-auto px-4 items-center justify-end gap-5 mt-6'>
-                <div className='grid gap-2 grid-cols-4 items-center'>
-                    <PrevButton
-                        onPress={onPrevButtonClick}
-                        disabled={prevBtnDisabled}
-                    />
-                    <Progress color='primary' size='sm' className='col-span-2' value={scrollSnaps[selectedIndex] * 100} />
-                    <NextButton
-                        onPress={onNextButtonClick}
-                        disabled={nextBtnDisabled}
-                    />
-                </div>
+            <div className='flex lg:hidden container max-w-xs mx-auto px-4 items-center justify-center mt-6'>
+                <ChevronsLeftRightEllipsis size={40} />
             </div>
         </div>
     );
 };
 
-export { Carousel };
+export { Carousel, usePrevNextButtons, useDotButton };

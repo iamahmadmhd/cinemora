@@ -33,27 +33,26 @@ const MediaSlider: React.FC<PropType> = ({ options }) => {
     }
 
     return (
-        <div className='flex flex-col gap-8'>
-            <h2 className='text-2xl font-bold'>Trending</h2>
-            <Carousel
-                loading={isLoading}
-                options={options}
-            >
-                {data?.map((media) => (
-                    <div
-                        key={media.id}
-                        className='flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%] pl-4 snap-start'
-                    >
-                        <MovieCard content={media} />
-                    </div>
-                ))}
-            </Carousel>
-        </div>
+        <>
+            <div className='flex flex-col gap-8'>
+                <h2 className='text-2xl font-bold'>Trending</h2>
+                <Carousel
+                    loading={isLoading}
+                    options={options}
+                >
+                    {data?.map((media) => (
+                        <MovieCard key={media.id} content={media} />
+                    ))}
+                </Carousel>
+            </div>
+
+        </>
     );
 };
 
 const MovieCard = ({ content }: { content: ITrendingMedia }) => {
     const { title, imageUrl, genres, overview, href } = content;
+    const joinedGenres = genres?.join(', ');
 
     return (
         <Card className='w-full overflow-hidden aspect-[2/3] group'>
@@ -72,15 +71,7 @@ const MovieCard = ({ content }: { content: ITrendingMedia }) => {
                     >
                         {MediaType[content.mediaType]}
                     </Chip>
-                    {genres.map((name, index) => (
-                        <Chip
-                            key={index}
-                            size='sm'
-                            color='secondary'
-                        >
-                            {name}
-                        </Chip>
-                    ))}
+
                 </div>
                 <div className='flex flex-col gap-1'>
                     <NextLink
@@ -90,7 +81,8 @@ const MovieCard = ({ content }: { content: ITrendingMedia }) => {
                         <span className='absolute inset-0' />
                         {title}
                     </NextLink>
-                    <p className='text-tiny text-white/60'>{overview}</p>
+                    <p className='text-tiny text-white/60'>{joinedGenres}</p>
+                    <p className='text-tiny text-white'>{overview}</p>
                 </div>
                 <div className='mt-auto inline-flex items-center justify-center box-border select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden outline-none text-tiny px-2 min-w-20 h-8 gap-2 rounded-medium transition-transform-colors-opacity motion-reduce:transition-none shadow-lg shadow-primary/40 bg-primary text-primary-foreground hover:opacity-hover'>
                     View details

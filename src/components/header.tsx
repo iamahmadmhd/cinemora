@@ -17,19 +17,21 @@ type NavItem = {
     href: string;
 };
 
-type HeaderContentProps = {
-    logo?: ReactNode;
-    nav?: NavItem[];
-    button?: ReactNode;
-};
-
 interface HeaderProps {
-    content: HeaderContentProps;
+    logo?: ReactNode;
+    navItems?: NavItem[];
+    button?: ReactNode;
     className?: string;
     props?: ComponentProps<'nav'>;
 }
 
-const Header: React.FC<HeaderProps> = ({ content, className, ...props }) => {
+const Header: React.FC<HeaderProps> = ({
+    logo,
+    navItems,
+    button,
+    className,
+    ...props
+}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -40,16 +42,16 @@ const Header: React.FC<HeaderProps> = ({ content, className, ...props }) => {
             {...props}
         >
             <NavbarContent>
-                {content?.nav?.length && (
+                {navItems?.length && (
                     <NavbarMenuToggle
                         aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                         className='sm:hidden'
                     />
                 )}
-                {content.logo && <NavbarBrand>{content.logo}</NavbarBrand>}
+                {logo && <NavbarBrand>{logo}</NavbarBrand>}
             </NavbarContent>
             <NavbarContent justify='end'>
-                {content?.nav?.map((item, index) => (
+                {navItems?.map((item, index) => (
                     <NavbarItem
                         key={`${item}-${index}`}
                         className='hidden sm:flex'
@@ -63,11 +65,11 @@ const Header: React.FC<HeaderProps> = ({ content, className, ...props }) => {
                         </Link>
                     </NavbarItem>
                 ))}
-                {content.button && <NavbarItem>{content.button}</NavbarItem>}
+                {button && <NavbarItem>{button}</NavbarItem>}
             </NavbarContent>
-            {content?.nav?.length && (
+            {navItems?.length && (
                 <NavbarMenu className='p-8'>
-                    {content?.nav?.map((item, index) => (
+                    {navItems?.map((item, index) => (
                         <NavbarMenuItem key={`${item}-${index}`}>
                             <Link
                                 className='w-full'
@@ -85,4 +87,4 @@ const Header: React.FC<HeaderProps> = ({ content, className, ...props }) => {
     );
 };
 
-export { type NavItem, type HeaderContentProps, type HeaderProps, Header };
+export { type NavItem, type HeaderProps, Header };

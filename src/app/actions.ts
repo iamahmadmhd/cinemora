@@ -31,7 +31,7 @@ interface ITVShow extends IBaseMedia {
 
 type Media = IMovie | ITVShow;
 
-interface IApiResponse {
+interface ITrendingAPIResponse {
     page: number;
     results: Media[];
 }
@@ -64,20 +64,22 @@ const fetchTrendingMedia = async (): Promise<ITrendingMedia[]> => {
             fetch(trendingUrl, options),
         ]);
 
-        if (!genreResponse.ok) throw new Error('Failed to fetch genres');
-        if (!trendingResponse.ok)
-            throw new Error('Failed to fetch trending media');
+        if (!genreResponse.ok || !trendingResponse.ok) {
+            const errorMessage = !genreResponse.ok
+                ? 'Failed to fetch genres'
+                : 'Failed to fetch trending media';
+            throw new Error(errorMessage);
+        }
 
-        const genreData = await genreResponse.json();
-        const trendingData: IApiResponse = await trendingResponse.json();
+        const [genreData, trendingData]: [{ genres: { id: number; name: string }[] }, ITrendingAPIResponse] = await Promise.all([
+            genreResponse.json(),
+            trendingResponse.json(),
+        ]);
 
         // Map genre IDs to names
         const genreMap = genreData.genres.reduce(
-            (
-                acc: Record<number, string>,
-                genre: { id: number; name: string }
-            ) => {
-                acc[genre.id] = genre.name;
+            (acc: Record<number, string>, { id, name }: { id: number; name: string }) => {
+                acc[id] = name;
                 return acc;
             },
             {}
@@ -87,17 +89,16 @@ const fetchTrendingMedia = async (): Promise<ITrendingMedia[]> => {
         return trendingData.results.map((media) => ({
             id: media.id,
             title: media.media_type === 'movie' ? media.title : media.name,
-            overview: media.overview.substring(0, 120).concat('...'),
+            overview: media.overview
+                ? `${media.overview.substring(0, 120)}...`
+                : 'No overview available',
             mediaType: media.media_type,
-            genres: media.genre_ids.map(
-                (id: number) => genreMap[id] || 'Unknown'
-            ),
-            //imageUrl: `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${media.poster_path}`,
-            imageUrl: '/images/18bb156d62382ba383341e4bc92be234.jpg',
+            genres: media.genre_ids?.map((id: number) => genreMap[id] || 'Unknown'),
+            imageUrl: `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${media.poster_path}`,
             href: `/details/${media.id}`,
         }));
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching trending media:', error);
         throw new Error('Failed to fetch trending media');
     }
 };

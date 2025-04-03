@@ -105,8 +105,8 @@ const fetchTrendingMedia = async (): Promise<IMedia[]> => {
                 genres: media.genre_ids?.map(
                     (id: number) => genreMap[id] || 'Unknown'
                 ),
-                //imageUrl: `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${media.poster_path}`,
-                imageUrl: '/images/2149946322.jpg',
+                imageUrl: `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${media.poster_path}`,
+                //imageUrl: '/images/2149946322.jpg',
                 href: `/details/${media.id}`,
             }))
             .slice(0, 5);
@@ -184,8 +184,8 @@ const fetchLatestMovies = async (): Promise<IMedia[]> => {
                 genres: movie.genre_ids?.map(
                     (id: number) => genreMap[id] || 'Unknown'
                 ),
-                //imageUrl: `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${movie.poster_path}`,
-                imageUrl: '/images/2149946322.jpg',
+                imageUrl: `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${movie.poster_path}`,
+                //imageUrl: '/images/2149946322.jpg',
                 releaseDate: movie.release_date,
                 href: `/details/${movie.id}`,
             }))

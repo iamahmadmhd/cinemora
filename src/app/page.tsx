@@ -1,9 +1,10 @@
 import { Header } from '@/components/header';
-import { MediaSlider } from '@/components/trending';
+import { MediaSlider } from '@/components/media-slider';
 import { Button } from '@heroui/button';
 import { Link } from '@heroui/link';
 import { EmblaOptionsType } from 'embla-carousel';
 import NextLink from 'next/link';
+import { fetchLatestMovies, fetchTrendingMedia } from './actions';
 
 const navItems = [
     { label: 'Profile', href: '/profile' },
@@ -12,8 +13,7 @@ const navItems = [
     { label: 'Analytics', href: '/analytics' },
 ];
 
-const mediaSliderOptions: EmblaOptionsType = {
-    //align: 'start',
+const trendingSliderOptions: EmblaOptionsType = {
     dragFree: true,
     loop: true,
 };
@@ -45,9 +45,22 @@ export default function Home() {
                     </Button>
                 }
             />
-            <main className='h-[300vh]'>
-                <div className='max-w-[1024px] mx-auto pt-10 px-6'>
-                    <MediaSlider options={mediaSliderOptions} />
+            <main>
+                <div className='max-w-[1024px] mx-auto py-20 px-6'>
+                    <MediaSlider
+                        headline='Trending now'
+                        fetchKey='trinding-media'
+                        sliderOptions={trendingSliderOptions}
+                        fetchFunction={fetchTrendingMedia}
+                    />
+                </div>
+                <div className='max-w-[1024px] mx-auto py-20 px-6'>
+                    <MediaSlider
+                        headline='Latest movies'
+                        fetchKey='latest-movies'
+                        sliderOptions={trendingSliderOptions}
+                        fetchFunction={fetchLatestMovies}
+                    />
                 </div>
             </main>
         </>

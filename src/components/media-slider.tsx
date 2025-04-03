@@ -1,28 +1,39 @@
 'use client';
 
 import { Card, CardBody } from '@heroui/card';
-import { Image } from '@heroui/image';
+import Image from 'next/image';
 import { Chip } from '@heroui/chip';
+import { Button } from '@heroui/button';
 import NextLink from 'next/link';
 import { EmblaOptionsType } from 'embla-carousel';
 import { Carousel } from '@/ui/carousel';
-import { fetchTrendingMedia, ITrendingMedia } from '@/app/actions';
+import { IMedia } from '@/app/actions';
 import useSWR from 'swr';
+import { cn } from '@/utils/classname';
 
 enum MediaType {
     movie = 'Movie',
     tv = 'TV',
 }
 
-type PropType = {
-    options: EmblaOptionsType;
-};
+interface MediaSliderProps {
+    headline?: string;
+    link?: string;
+    sliderOptions: EmblaOptionsType;
+    fetchKey: string; // fetchKey for reusability
+    fetchFunction: () => Promise<IMedia[]>; // fetchFunction for reusability
+    className?: string;
+}
 
-const MediaSlider: React.FC<PropType> = ({ options }) => {
-    const { data, error, isLoading } = useSWR(
-        'trending-media',
-        fetchTrendingMedia
-    );
+const MediaSlider: React.FC<MediaSliderProps> = ({
+    headline,
+    link = '/',
+    sliderOptions,
+    fetchKey,
+    fetchFunction,
+    className,
+}) => {
+    const { data, error, isLoading } = useSWR(fetchKey, fetchFunction);
 
     if (error) {
         return <p className='text-red-500'>Error: {error.message}</p>;
@@ -33,33 +44,45 @@ const MediaSlider: React.FC<PropType> = ({ options }) => {
     }
 
     return (
-        <>
-            <div className='flex flex-col gap-8'>
-                <h2 className='text-2xl font-bold'>Trending</h2>
-                <Carousel
-                    loading={isLoading}
-                    options={options}
-                >
-                    {data?.map((media) => (
-                        <MovieCard key={media.id} content={media} />
-                    ))}
-                </Carousel>
-            </div>
-
-        </>
+        <div className={cn('flex flex-col gap-8', className)}>
+            {headline && (
+                <div className='flex justify-between items-center'>
+                    <h2 className='text-2xl font-bold'>{headline}</h2>
+                    <Button
+                        as={NextLink}
+                        href={link}
+                        variant='flat'
+                        color='primary'
+                    >
+                        Show All
+                    </Button>
+                </div>
+            )}
+            <Carousel
+                loading={isLoading}
+                options={sliderOptions}
+            >
+                {data?.map((media) => (
+                    <MediaCard
+                        key={media.id}
+                        content={media}
+                    />
+                ))}
+            </Carousel>
+        </div>
     );
 };
 
-const MovieCard = ({ content }: { content: ITrendingMedia }) => {
+const MediaCard = ({ content }: { content: IMedia }) => {
     const { title, imageUrl, genres, overview, href } = content;
     const joinedGenres = genres?.join(', ');
 
     return (
         <Card className='w-full overflow-hidden aspect-[2/3] group'>
             <Image
-                removeWrapper
+                fill
                 alt={title}
-                className='z-0 w-full h-full object-cover'
+                className='z-0 object-cover'
                 src={imageUrl}
                 loading='lazy'
             />
@@ -71,7 +94,6 @@ const MovieCard = ({ content }: { content: ITrendingMedia }) => {
                     >
                         {MediaType[content.mediaType]}
                     </Chip>
-
                 </div>
                 <div className='flex flex-col gap-1'>
                     <NextLink

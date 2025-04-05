@@ -41,6 +41,8 @@ export async function signup(formData: FormData) {
         email: formData.get('email') as string,
         password: formData.get('password') as string,
         options: {
+            firstname: formData.get('firstname'),
+            lastname: formData.get('lastname'),
             emailRedirectTo: '/login'
         }
     }

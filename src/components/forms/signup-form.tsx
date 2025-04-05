@@ -5,6 +5,7 @@ import { Form, Input, Checkbox, Button } from '@heroui/react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { signup } from '@/app/actions';
 
 // Define the schema for form validation using Zod
 const schema = z
@@ -30,20 +31,26 @@ const schema = z
         path: ['confirmPassword'],
     });
 
-type FormData = z.infer<typeof schema>;
+type FormProps = z.infer<typeof schema>;
 
 export function SignupForm() {
-    const [submitted, setSubmitted] = useState<FormData | null>(null);
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        getValues,
+        formState: { errors, isLoading, isSubmitted },
     } = useForm({
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data: FormData) => {
-        setSubmitted(data);
+    const onSubmit = async (data: FormProps) => {
+        const { firstname, lastname, email, password } = data;
+        const formData = new FormData();
+        formData.append('firstname', firstname);
+        formData.append('lastname', lastname);
+        formData.append('email', email);
+        formData.append('password', password);
+        await signup(formData);
     };
 
     return (
@@ -134,10 +141,10 @@ export function SignupForm() {
                 </div>
             </div>
 
-            {submitted && (
+            {isSubmitted && (
                 <div className='text-small text-default-500 mt-4'>
                     Submitted data:{' '}
-                    <pre>{JSON.stringify(submitted, null, 2)}</pre>
+                    <pre>{JSON.stringify(getValues(), null, 2)}</pre>
                 </div>
             )}
         </Form>

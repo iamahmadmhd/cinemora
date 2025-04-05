@@ -20,7 +20,7 @@ const schema = z
             .regex(/[^a-z]/gi, 'Password must contain at least one symbol'),
     })
 
-type FormProps = z.infer<typeof schema>;
+export type LoginFormProps = z.infer<typeof schema>;
 
 export function LoginForm() {
     const {
@@ -32,12 +32,8 @@ export function LoginForm() {
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data: FormProps) => {
-        const { email, password } = data;
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password);
-        login(formData);
+    const onSubmit = async (data: LoginFormProps) => {
+        await login(data);
     };
 
     return (

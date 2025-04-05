@@ -30,7 +30,7 @@ const schema = z
         path: ['confirmPassword'],
     });
 
-type FormProps = z.infer<typeof schema>;
+export type SignupFormProps = z.infer<typeof schema>;
 
 export function SignupForm() {
     const {
@@ -42,14 +42,8 @@ export function SignupForm() {
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = async (data: FormProps) => {
-        const { firstname, lastname, email, password } = data;
-        const formData = new FormData();
-        formData.append('firstname', firstname);
-        formData.append('lastname', lastname);
-        formData.append('email', email);
-        formData.append('password', password);
-        await signup(formData);
+    const onSubmit = async (data: SignupFormProps) => {
+        await signup(data);
     };
 
     return (

@@ -20,45 +20,33 @@ const TrendingSection = () => {
         setMediaType(selectedType as keyof typeof MediaTypes);
     };
 
-    console.log(MediaTypes);
     return (
         <section className=''>
             <div className='mb-8'>
-                <ButtonGroup
-                    variant='flat'
-                >
-                    <Button
-                        onPress={handleButtonClick}
-                        value='all'
-                        color={mediaType === 'all' ? 'secondary' : 'default'}
-                        className='w-full'
-                    >
-                        All
-                    </Button>
-                    <Button
-                        onPress={handleButtonClick}
-                        value='movie'
-                        color={mediaType === 'movie' ? 'secondary' : 'default'}
-                        className='w-full'
-                    >
-                        Movies
-                    </Button>
-                    <Button
-                        onPress={handleButtonClick}
-                        value='tv'
-                        color={mediaType === 'tv' ? 'secondary' : 'default'}
-                        className='w-full'
-                    >
-                        TV Shows
-                    </Button>
+                <ButtonGroup variant='flat'>
+                    {Object.keys(MediaTypes).map((type) => (
+                        <Button
+                            key={type}
+                            onPress={handleButtonClick}
+                            value={type}
+                            color={mediaType === type ? 'secondary' : 'default'}
+                            className='w-full'
+                        >
+                            {type === 'all'
+                                ? 'All'
+                                : MediaTypes[type as keyof typeof MediaTypes]}
+                        </Button>
+                    ))}
                 </ButtonGroup>
             </div>
             <MediaGrid
                 headline={`Trending ${MediaTypes[mediaType]}`}
+                link={`/${mediaType}`}
                 fetchKey={fetchKey}
                 fetchFunction={() => fetchTrendingMedia(mediaType)}
             />
         </section>
     );
 };
+
 export { TrendingSection };

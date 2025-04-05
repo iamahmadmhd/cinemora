@@ -1,10 +1,10 @@
 import { Header } from '@/components/header';
 import { Button, ButtonGroup } from '@heroui/button';
 import { Link } from '@heroui/link';
-import { EmblaOptionsType } from 'embla-carousel';
 import NextLink from 'next/link';
 import { fetchTrendingMedia } from './actions';
 import { MediaGrid } from '@/components/media-grid';
+import { TrendingSection } from '@/components/trending-section';
 
 const navItems = [
     { label: 'Movies', href: '/movie' },
@@ -38,14 +38,8 @@ export default function Home() {
                     </Button>
                 }
             />
-            <main>
-                <div className='max-w-[1200px] mx-auto px-6 py-20'>
-                    <MediaGrid
-                        headline='Trending Now'
-                        fetchKey='trending-media'
-                        fetchFunction={fetchTrendingMedia}
-                    />
-                </div>
+            <main className='max-w-[1200px] mx-auto px-6 py-20'>
+                <TrendingSection />
             </main>
         </>
     );

@@ -1,14 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-    Form,
-    Input,
-    Select,
-    SelectItem,
-    Checkbox,
-    Button,
-} from '@heroui/react';
+import { Form, Input, Checkbox, Button } from '@heroui/react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

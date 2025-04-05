@@ -3,78 +3,58 @@
 import { MediaTypes } from '@/components/trending-section';
 import { getGenres } from '@/utils/helpers';
 import axios from 'axios';
-
-type Genre = {
-    id: number;
-    name: string;
-};
-
-type BaseMedia = {
-    backdrop_path: string;
-    id: number;
-    overview: string;
-    poster_path: string;
-    adult: boolean;
-    original_language: string;
-    origin_country: string[];
-    genre_ids?: number[];
-    genres?: Genre[];
-    popularity: number;
-    vote_average: number;
-    vote_count: number;
-    tagline?: string;
-    status: string;
-};
-
-type TMDBMovie = {
-    title: string;
-    original_title: string;
-    release_date: string;
-    video: boolean;
-    media_type: 'movie';
-} & BaseMedia;
-
-type TMDBTVShow = {
-    name: string;
-    original_name: string;
-    first_air_date: string;
-    media_type: 'tv';
-    number_of_seasons: number;
-    number_of_episodes: number;
-} & BaseMedia;
-
-type Media = TMDBMovie | TMDBTVShow;
-
-interface IBaseMedia {
-    id: number;
-    title: string;
-    overview: string;
-    mediaType: 'movie' | 'tv';
-    genres: string[];
-    posterUrl: string;
-    backdropUrl?: string;
-    href?: string;
-    releaseDate: string;
-    voteAverage: number;
-    voteCount: number;
-    popularity: number;
-    tagline: string;
-    status: string;
-    originCountry: string[];
-}
-
-interface ITVSerie extends IBaseMedia {
-    numberOfSeasons: number;
-    numberOfEpisodes: number;
-}
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/utils/supabase/server';
+import { MediaBaseInterface, MediaType, MovieMedia, TVShowInterface, TVShowMedia } from 'src/types';
 
 const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL;
 const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
 const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL;
 
+export async function login(formData: FormData) {
+    const supabase = await createClient()
+
+    // type-casting here for convenience
+    // in practice, you should validate your inputs
+    const data = {
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+    }
+
+    const { error } = await supabase.auth.signInWithPassword(data)
+
+    if (error) {
+        redirect('/error')
+    }
+
+    revalidatePath('/', 'layout')
+    redirect('/')
+}
+
+export async function signup(formData: FormData) {
+    const supabase = await createClient()
+
+    // type-casting here for convenience
+    // in practice, you should validate your inputs
+    const data = {
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+    }
+
+    const { error } = await supabase.auth.signUp(data)
+
+    if (error) {
+        redirect('/error')
+    }
+
+    revalidatePath('/', 'layout')
+    redirect('/')
+}
+
 const fetchTrendingMedia = async (
     mediaType: keyof typeof MediaTypes
-): Promise<IBaseMedia[]> => {
+): Promise<MediaBaseInterface[]> => {
     const genreUrl = `${TMDB_API_URL}/genre/movie/list`;
     console.log({ mediaType });
     const mediaUrl = `${TMDB_API_URL}/trending/${mediaType}/week`;
@@ -94,11 +74,11 @@ const fetchTrendingMedia = async (
         const genres = getGenres(genreResponse.data.genres);
 
         return mediaResponse.data.results
-            .filter((media: Media): media is Media =>
+            .filter((media: MediaType): media is MediaType =>
                 ['movie', 'tv'].includes(media.media_type)
             )
             .map(
-                (media: Media): IBaseMedia => ({
+                (media: MediaType): MediaBaseInterface => ({
                     id: media.id,
                     title:
                         media.media_type === 'movie' ? media.title : media.name,
@@ -138,7 +118,7 @@ const fetchTrendingMedia = async (
     }
 };
 
-const fetchMovieById = async (movieId: string): Promise<IBaseMedia> => {
+const fetchMovieById = async (movieId: string): Promise<MediaBaseInterface> => {
     const movieUrl = `${TMDB_API_URL}/movie/${movieId}`;
     const options = {
         headers: {
@@ -148,7 +128,7 @@ const fetchMovieById = async (movieId: string): Promise<IBaseMedia> => {
     };
 
     try {
-        const movieResponse: TMDBMovie = (await axios.get(movieUrl, options))
+        const movieResponse: MovieMedia = (await axios.get(movieUrl, options))
             .data;
 
         return {
@@ -158,7 +138,7 @@ const fetchMovieById = async (movieId: string): Promise<IBaseMedia> => {
             mediaType: 'movie',
             genres:
                 movieResponse.genres?.map(
-                    (genre: Genre) => genre.name || 'Unknown'
+                    (genre) => genre.name || 'Unknown'
                 ) ?? [],
             posterUrl: `${TMDB_IMAGES_URL}/w780${movieResponse.poster_path}`,
             backdropUrl: `${TMDB_IMAGES_URL}/w1280${movieResponse.backdrop_path}`,
@@ -178,7 +158,7 @@ const fetchMovieById = async (movieId: string): Promise<IBaseMedia> => {
     }
 };
 
-const fetchTVShowById = async (showId: string): Promise<ITVSerie> => {
+const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     const movieUrl = `${TMDB_API_URL}/tv/${showId}`;
     const options = {
         headers: {
@@ -188,7 +168,7 @@ const fetchTVShowById = async (showId: string): Promise<ITVSerie> => {
     };
 
     try {
-        const showResponse: TMDBTVShow = (await axios.get(movieUrl, options))
+        const showResponse: TVShowMedia = (await axios.get(movieUrl, options))
             .data;
 
         return {
@@ -198,7 +178,7 @@ const fetchTVShowById = async (showId: string): Promise<ITVSerie> => {
             mediaType: 'tv',
             genres:
                 showResponse.genres?.map(
-                    (genre: Genre) => genre.name || 'Unknown'
+                    (genre) => genre.name || 'Unknown'
                 ) ?? [],
             posterUrl: `${TMDB_IMAGES_URL}/w780${showResponse.poster_path}`,
             backdropUrl: `${TMDB_IMAGES_URL}/w1280${showResponse.backdrop_path}`,
@@ -219,4 +199,3 @@ const fetchTVShowById = async (showId: string): Promise<ITVSerie> => {
 };
 
 export { fetchTrendingMedia, fetchMovieById, fetchTVShowById };
-export type { IBaseMedia, TMDBMovie, TMDBTVShow, ITVSerie };

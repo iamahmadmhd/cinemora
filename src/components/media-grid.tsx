@@ -2,17 +2,17 @@
 
 import { Button } from '@heroui/button';
 import NextLink from 'next/link';
-import { IBaseMedia } from '@/app/actions';
 import useSWR from 'swr';
 import { cn } from '@/utils/classname';
 import { MediaCard } from './ui/movie-card';
 import { Skeleton } from './ui/skeleton';
+import { MediaBaseInterface } from 'src/types';
 
 interface MediaGridProps {
     headline?: string;
     link?: string;
     fetchKey: string; // fetchKey for reusability
-    fetchFunction: () => Promise<IBaseMedia[]>; // fetchFunction for reusability
+    fetchFunction: () => Promise<MediaBaseInterface[]>; // fetchFunction for reusability
     className?: string;
 }
 

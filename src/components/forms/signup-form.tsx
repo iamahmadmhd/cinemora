@@ -94,21 +94,23 @@ export function SignupForm() {
                     {...register('confirmPassword')}
                 />
 
-                <Checkbox
-                    isRequired
-                    color='primary'
-                    classNames={{
-                        label: 'text-small',
-                    }}
-                    {...register('terms')}
-                >
-                    I agree to the terms and conditions
-                </Checkbox>
-                {errors.terms?.message && (
-                    <span className='text-danger text-sm'>
-                        {errors.terms.message}
-                    </span>
-                )}
+                <div className='flex flex-col gap-2'>
+                    <Checkbox
+                        color='primary'
+                        classNames={{
+                            label: 'text-small',
+                            wrapper: 'before:border-foreground'
+                        }}
+                        {...register('terms')}
+                    >
+                        I agree to the terms and conditions
+                    </Checkbox>
+                    {errors.terms?.message && (
+                        <span className='text-danger text-sm'>
+                            {errors.terms.message}
+                        </span>
+                    )}
+                </div>
 
                 <div className='flex gap-4'>
                     <Button

@@ -41,7 +41,7 @@ export default function Home() {
                     <h1 className='text-4xl font-bold mb-8'>
                         Welcome to Cinemora
                     </h1>
-                    <p className='text-lg mb-8'>
+                    <p className='mb-8'>
                         Discover the latest movies and TV shows, all in one
                         place. Add your favorites to your lists, share your
                         lists with your friends and never miss a release!

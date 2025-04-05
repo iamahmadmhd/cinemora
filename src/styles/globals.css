@@ -19,19 +19,6 @@
 }
 
 @theme inline {
-    --color-default-50: #0d0c0d;
-    --color-default-100: #1b1919;
-    --color-default-200: #282526;
-    --color-default-300: #363232;
-    --color-default-400: #433e3f;
-    --color-default-500: #696565;
-    --color-default-600: #8e8b8c;
-    --color-default-700: #b4b2b2;
-    --color-default-800: #d9d8d9;
-    --color-default-900: #ffffff;
-    --color-default-foreground: var(--default-foreground);
-    --color-default: #433e3f;
-
     --color-primary-50: #002437;
     --color-primary-100: #003956;
     --color-primary-200: #004d76;

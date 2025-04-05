@@ -7,6 +7,17 @@
     initial-value: 0px;
 }
 
+.light,
+:root,
+[data-theme='light'] {
+    --default-foreground: #000000;
+}
+
+.dark,
+[data-theme='dark'] {
+    --default-foreground: #ffffff;
+}
+
 @theme inline {
     --color-default-50: #0d0c0d;
     --color-default-100: #1b1919;
@@ -18,7 +29,7 @@
     --color-default-700: #b4b2b2;
     --color-default-800: #d9d8d9;
     --color-default-900: #ffffff;
-    --color-default-foreground: #fff;
+    --color-default-foreground: var(--default-foreground);
     --color-default: #433e3f;
 
     --color-primary-50: #002437;
@@ -85,6 +96,8 @@
     --color-danger-900: #fee1eb;
     --color-danger-foreground: #fff;
     --color-danger: #f31260;
+
+    --radius-5xl: 2.5rem;
 }
 
 html {

@@ -1,10 +1,9 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Card } from '@heroui/card';
-import { Skeleton } from '@heroui/skeleton';
 import { ChevronsLeftRightEllipsis } from 'lucide-react';
 import { cn } from '@/utils/classname';
+import { Skeleton } from './skeleton';
 
 type UsePrevNextButtonsType = {
     prevBtnDisabled: boolean;
@@ -109,10 +108,10 @@ const Carousel: React.FC<CarouselProps> = (props) => {
     return (
         <div className={cn(className)}>
             <div
-                className='overflow-hidden mr-break-out section-mask-x md:section-mask-r grid gap-y-8'
+                className='overflow-hidden grid gap-y-8'
                 ref={emblaRef}
             >
-                <div className='flex -ml-4 touch-pan-y touch-pinch-zoom snap-x'>
+                <div className='flex -ml-4 touch-pan-y touch-pinch-zoom'>
                     {[
                         ...(loading
                             ? [1, 2, 3, 4, 5]
@@ -120,18 +119,9 @@ const Carousel: React.FC<CarouselProps> = (props) => {
                     ].map((item, index) => (
                         <div
                             key={index}
-                            className='flex-[0_0_50%] md:flex-[0_0_33.3333%] lg:flex-[0_0_20%] pl-4 snap-start'
+                            className='pl-4 flex-[0_0_25%]'
                         >
-                            <Card
-                                className='w-full aspect-[2/3]'
-                                radius='lg'
-                            >
-                                {loading ? (
-                                    <Skeleton className='rounded-lg h-full bg-default-300' />
-                                ) : (
-                                    item
-                                )}
-                            </Card>
+                            {loading ? <Skeleton key={index} /> : item}
                         </div>
                     ))}
                 </div>

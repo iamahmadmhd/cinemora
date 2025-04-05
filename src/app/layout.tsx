@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang='en'>
-            <body>
+            <body className='bg-[url("/page-background.svg")] bg-fixed bg-cover min-h-lvh'>
                 <Providers>{children}</Providers>
             </body>
         </html>

@@ -39,6 +39,9 @@ const Header: React.FC<HeaderProps> = ({
             isBordered
             onMenuOpenChange={setIsMenuOpen}
             className={className}
+            classNames={{
+                wrapper: 'max-w-[1200px] mx-auto px-6 py-4',
+            }}
             {...props}
         >
             <NavbarContent>

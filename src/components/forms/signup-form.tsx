@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
 import { Form, Input, Checkbox, Button } from '@heroui/react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -135,6 +134,7 @@ export function SignupForm() {
                         className='w-full'
                         color='primary'
                         type='submit'
+                        isLoading={isLoading}
                     >
                         Submit
                     </Button>

@@ -4,17 +4,17 @@ import { Button } from '@heroui/button';
 import NextLink from 'next/link';
 import { EmblaOptionsType } from 'embla-carousel';
 import { Carousel } from '@/ui/carousel';
-import { IBaseMedia } from '@/app/actions';
 import useSWR from 'swr';
 import { cn } from '@/utils/classname';
 import { MediaCard } from './ui/movie-card';
+import { MediaBaseInterface } from 'src/types';
 
 interface MediaSliderProps {
     headline?: string;
     link?: string;
     sliderOptions: EmblaOptionsType;
     fetchKey: string;
-    fetchFunction: () => Promise<IBaseMedia[]>;
+    fetchFunction: () => Promise<MediaBaseInterface[]>;
     className?: string;
 }
 

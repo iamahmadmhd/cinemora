@@ -39,10 +39,8 @@ export default function Layout({
                     </Button>
                 }
             />
-            <main>
-                <div className='max-w-[1200px] mx-auto px-6 py-20'>
-                    {children}
-                </div>
+            <main className='max-w-[1200px] mx-auto px-6 py-20'>
+                {children}
             </main>
         </>
     );

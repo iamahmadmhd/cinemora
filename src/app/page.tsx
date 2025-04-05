@@ -1,9 +1,7 @@
 import { Header } from '@/components/header';
-import { Button, ButtonGroup } from '@heroui/button';
+import { Button } from '@heroui/button';
 import { Link } from '@heroui/link';
 import NextLink from 'next/link';
-import { fetchTrendingMedia } from './actions';
-import { MediaGrid } from '@/components/media-grid';
 import { TrendingSection } from '@/components/trending-section';
 
 const navItems = [
@@ -38,7 +36,14 @@ export default function Home() {
                     </Button>
                 }
             />
-            <main className='max-w-[1200px] mx-auto px-6 py-20'>
+            <main className='max-w-[1200px] mx-auto px-6'>
+                <section className='py-20'>
+                    <h1 className='text-4xl font-bold mb-8'>Welcome to Cinemora</h1>
+                    <p className='text-lg mb-8'>
+                        Discover the latest movies and TV shows, all in one place.
+                        Add your favorites to your lists, share your lists with your friends and never miss a release!
+                    </p>
+                </section>
                 <TrendingSection />
             </main>
         </>

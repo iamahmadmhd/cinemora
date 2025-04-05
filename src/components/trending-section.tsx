@@ -4,6 +4,7 @@ import { Button, ButtonGroup, PressEvent } from '@heroui/button';
 import { fetchTrendingMedia } from '@/app/actions';
 import { MediaGrid } from '@/components/media-grid';
 import { useState } from 'react';
+import { cn } from '@/utils/classname';
 
 export enum MediaTypes {
     all = 'Movies and TV Shows',
@@ -11,7 +12,13 @@ export enum MediaTypes {
     tv = 'TV Shows',
 }
 
-const TrendingSection = () => {
+interface TrendingSectionProps {
+    className?: string;
+}
+
+const TrendingSection = (props: TrendingSectionProps) => {
+    const { className } = props;
+
     const [mediaType, setMediaType] = useState<keyof typeof MediaTypes>('all');
     const fetchKey = `trending-${mediaType}`;
 
@@ -21,7 +28,10 @@ const TrendingSection = () => {
     };
 
     return (
-        <section className=''>
+        <section className={cn(
+            'py-20',
+            className,
+        )}>
             <div className='mb-8'>
                 <ButtonGroup variant='flat'>
                     {Object.keys(MediaTypes).map((type) => (

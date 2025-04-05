@@ -3,7 +3,7 @@ import { Chip } from '@heroui/chip';
 import { Star } from 'lucide-react';
 import NextImage from 'next/image';
 import React from 'react';
-import { ITVSerie } from '@/app/actions';
+import { TVShowInterface } from 'src/types';
 
 enum MediaType {
     movie = 'Movie',
@@ -11,7 +11,7 @@ enum MediaType {
 }
 
 type MediaDetailProps = Omit<
-    ITVSerie,
+    TVShowInterface,
     'id' | 'backdropUrl' | 'href' | 'voteCount' | 'popularity'
 >;
 

@@ -2,17 +2,17 @@
 
 import { Button } from '@heroui/button';
 import NextLink from 'next/link';
-import { IBaseMedia } from '@/app/actions';
 import useSWR from 'swr';
 import { cn } from '@/utils/classname';
 import { MediaCard } from './ui/movie-card';
 import { Skeleton } from './ui/skeleton';
+import { MediaBaseInterface } from 'src/types';
 
 interface MediaGridProps {
     headline?: string;
     link?: string;
     fetchKey: string; // fetchKey for reusability
-    fetchFunction: () => Promise<IBaseMedia[]>; // fetchFunction for reusability
+    fetchFunction: () => Promise<MediaBaseInterface[]>; // fetchFunction for reusability
     className?: string;
 }
 
@@ -41,7 +41,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({
                     <Button
                         as={NextLink}
                         href={link}
-                        variant='flat'
+                        variant='light'
                         color='primary'
                     >
                         Show All
@@ -52,11 +52,11 @@ const MediaGrid: React.FC<MediaGridProps> = ({
                 {isLoading
                     ? [...Array(8)].map((_, index) => <Skeleton key={index} />)
                     : data?.map((item) => (
-                          <MediaCard
-                              key={item.id}
-                              content={item}
-                          />
-                      ))}
+                        <MediaCard
+                            key={item.id}
+                            content={item}
+                        />
+                    ))}
             </div>
         </div>
     );

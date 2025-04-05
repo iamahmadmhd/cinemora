@@ -2,10 +2,10 @@ import { Card, CardBody } from '@heroui/card';
 import Image from 'next/image';
 import { Chip } from '@heroui/chip';
 import NextLink from 'next/link';
-import { IBaseMedia } from '@/app/actions';
 import { Star } from 'lucide-react';
+import { MediaBaseInterface } from 'src/types';
 
-const MediaCard = ({ content }: { content: IBaseMedia }) => {
+const MediaCard = ({ content }: { content: MediaBaseInterface }) => {
     const { title, posterUrl, href, voteAverage } = content;
 
     return (

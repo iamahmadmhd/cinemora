@@ -1,6 +1,4 @@
 import { Image } from '@heroui/image';
-import { Button, ButtonGroup } from '@heroui/button';
-import { Heart, ListPlus, Share } from 'lucide-react';
 import NextImage from 'next/image';
 
 interface HeroDetailProps {

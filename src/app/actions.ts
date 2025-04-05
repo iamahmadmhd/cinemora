@@ -1,5 +1,6 @@
 'use server';
 
+import { MediaTypes } from '@/components/trending-section';
 import { getGenres } from '@/utils/helpers';
 import axios from 'axios';
 
@@ -71,9 +72,12 @@ const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL;
 const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
 const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL;
 
-const fetchTrendingMedia = async (): Promise<IBaseMedia[]> => {
+const fetchTrendingMedia = async (
+    mediaType: keyof typeof MediaTypes
+): Promise<IBaseMedia[]> => {
     const genreUrl = `${TMDB_API_URL}/genre/movie/list`;
-    const mediaUrl = `${TMDB_API_URL}/trending/all/day`;
+    console.log({ mediaType });
+    const mediaUrl = `${TMDB_API_URL}/trending/${mediaType}/week`;
     const options = {
         headers: {
             accept: 'application/json',
@@ -131,64 +135,6 @@ const fetchTrendingMedia = async (): Promise<IBaseMedia[]> => {
     } catch (error) {
         console.error('Error fetching trending media:', error);
         throw new Error('Failed to fetch trending media');
-    }
-};
-
-const fetchLatestMovies = async (): Promise<IBaseMedia[]> => {
-    const genreUrl = `${TMDB_API_URL}/genre/movie/list`;
-    const today = new Date();
-    const lastMonth = new Date(today.setMonth(today.getMonth() - 1));
-    const formatDate = (date: Date) => date.toISOString().split('T')[0];
-
-    const latestMoviesUrl = `${TMDB_API_URL}/discover/movie?release_date.gte=${formatDate(lastMonth)}&release_date.lte=${formatDate(new Date())}&sort_by=primary_release_date.desc`;
-    const options = {
-        headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${TMDB_API_TOKEN}`,
-        },
-    };
-
-    try {
-        const [genreResponse, latestMoviesResponse] = await Promise.all([
-            axios.get(genreUrl, options),
-            axios.get(latestMoviesUrl, options),
-        ]);
-
-        const genres = getGenres(genreResponse.data.genres);
-
-        return latestMoviesResponse.data.results
-            .map(
-                (movie: TMDBMovie): IBaseMedia => ({
-                    id: movie.id,
-                    title: movie.title,
-                    overview: movie.overview
-                        ? `${movie.overview.substring(0, 120)}...`
-                        : 'No overview available',
-                    mediaType: 'movie',
-                    genres:
-                        movie.genre_ids?.map(
-                            (id: number) => genres[id] || 'Unknown'
-                        ) ?? [],
-                    posterUrl:
-                        process.env.NODE_ENV === 'development'
-                            ? '/images/2149946322.jpg'
-                            : `${TMDB_IMAGES_URL}/w342${movie.poster_path}`,
-                    releaseDate: movie.release_date,
-                    href: `/movies/${movie.id}`,
-                    tagline: movie.tagline?.length
-                        ? movie.tagline
-                        : movie.title,
-                    voteAverage: movie.vote_average,
-                    voteCount: movie.vote_count,
-                    popularity: movie.popularity,
-                    status: movie.status,
-                    originCountry: movie.origin_country,
-                })
-            )
-            .slice(0, 5);
-    } catch (error) {
-        console.error('Error fetching latest movies:', error);
-        throw new Error('Failed to fetch latest movies');
     }
 };
 
@@ -272,10 +218,5 @@ const fetchTVShowById = async (showId: string): Promise<ITVSerie> => {
     }
 };
 
-export {
-    fetchTrendingMedia,
-    fetchLatestMovies,
-    fetchMovieById,
-    fetchTVShowById,
-};
+export { fetchTrendingMedia, fetchMovieById, fetchTVShowById };
 export type { IBaseMedia, TMDBMovie, TMDBTVShow, ITVSerie };

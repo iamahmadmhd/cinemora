@@ -74,14 +74,18 @@ const MediaDetail = (props: MediaDetailProps) => {
                         <li className='mb-2 text-gray-500'>Status</li>
                         <li>{status}</li>
                     </ul>
-                    <ul>
-                        <li className='mb-2 text-gray-500'>Seasons</li>
-                        <li>{numberOfSeasons}</li>
-                    </ul>
-                    <ul>
-                        <li className='mb-2 text-gray-500'>Episodes</li>
-                        <li>{numberOfEpisodes}</li>
-                    </ul>
+                    {mediaType === 'tv' && (
+                        <ul>
+                            <li className='mb-2 text-gray-500'>Seasons</li>
+                            <li>{numberOfSeasons}</li>
+                        </ul>
+                    )}
+                    {mediaType === 'tv' && (
+                        <ul>
+                            <li className='mb-2 text-gray-500'>Episodes</li>
+                            <li>{numberOfEpisodes}</li>
+                        </ul>
+                    )}
                     <ul>
                         <li className='mb-2 text-gray-500'>Genres</li>
                         <li>{genres?.join(', ')}</li>

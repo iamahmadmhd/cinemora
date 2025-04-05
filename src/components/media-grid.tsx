@@ -37,7 +37,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({
         <div className={cn('flex flex-col gap-8', className)}>
             {headline && (
                 <div className='flex justify-between items-center'>
-                    <h2 className='text-2xl font-bold'>{headline}</h2>
+                    <h4 className='text-lg font-bold'>{headline}</h4>
                     <Button
                         as={NextLink}
                         href={link}

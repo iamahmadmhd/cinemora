@@ -11,6 +11,7 @@ import {
 } from '@heroui/navbar';
 import { Link } from '@heroui/link';
 import { ComponentProps, ReactNode, useState } from 'react';
+import { ThemeSwitcher } from '@/ui/theme-switcher';
 
 type NavItem = {
     label: string;
@@ -69,6 +70,7 @@ const Header: React.FC<HeaderProps> = ({
                     </NavbarItem>
                 ))}
                 {button && <NavbarItem>{button}</NavbarItem>}
+                <ThemeSwitcher />
             </NavbarContent>
             {navItems?.length && (
                 <NavbarMenu className='p-8'>

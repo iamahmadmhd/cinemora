@@ -50,7 +50,6 @@ export default function Home() {
                         as={NextLink}
                         href='/signup'
                         color='primary'
-                        variant='flat'
                     >
                         Get Started
                     </Button>

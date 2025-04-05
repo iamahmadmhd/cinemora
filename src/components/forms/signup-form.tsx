@@ -9,7 +9,8 @@ import { useForm } from 'react-hook-form';
 // Define the schema for form validation using Zod
 const schema = z
     .object({
-        name: z.string().min(1, 'Name is required'),
+        firstname: z.string().min(1, 'First name is required'),
+        lastname: z.string().min(1, 'Last name is required'),
         email: z.string().email({ message: 'Invalid email address' }),
         password: z
             .string()
@@ -53,12 +54,22 @@ export function SignupForm() {
             <div className='flex flex-col gap-8 w-full max-w-sm backdrop-blur-lg shadow-lg p-6 rounded-3xl bg-background/20'>
                 <Input
                     isRequired
-                    errorMessage={errors.name?.message}
-                    label='Name'
+                    errorMessage={errors.firstname?.message}
+                    label='First name'
                     labelPlacement='outside'
-                    placeholder='Enter your name'
+                    placeholder='Enter your last name'
                     variant='underlined'
-                    {...register('name')}
+                    {...register('firstname')}
+                />
+
+                <Input
+                    isRequired
+                    errorMessage={errors.lastname?.message}
+                    label='Last name'
+                    labelPlacement='outside'
+                    placeholder='Enter your last name'
+                    variant='underlined'
+                    {...register('lastname')}
                 />
 
                 <Input

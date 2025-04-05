@@ -30,7 +30,7 @@ const TrendingSection = (props: TrendingSectionProps) => {
     return (
         <section className={cn('py-20', className)}>
             <div className='mb-8'>
-                <ButtonGroup variant='flat'>
+                <ButtonGroup variant='flat' className='w-full md:w-auto'>
                     {Object.keys(MediaTypes).map((type) => (
                         <Button
                             key={type}

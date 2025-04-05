@@ -41,7 +41,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({
                     <Button
                         as={NextLink}
                         href={link}
-                        variant='flat'
+                        variant='light'
                         color='primary'
                     >
                         Show All
@@ -52,11 +52,11 @@ const MediaGrid: React.FC<MediaGridProps> = ({
                 {isLoading
                     ? [...Array(8)].map((_, index) => <Skeleton key={index} />)
                     : data?.map((item) => (
-                          <MediaCard
-                              key={item.id}
-                              content={item}
-                          />
-                      ))}
+                        <MediaCard
+                            key={item.id}
+                            content={item}
+                        />
+                    ))}
             </div>
         </div>
     );

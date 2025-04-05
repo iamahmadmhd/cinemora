@@ -25,37 +25,6 @@ const HeroDetail = (props: HeroDetailProps) => {
                 <div className='p-6 md:p-10 rounded-3xl backdrop-blur-lg bg-primary-50/40'>
                     <h1 className='text-4xl font-medium text-white'>{title}</h1>
                 </div>
-                <div className='flex items-start justify-center md:justify-end'>
-                    <ButtonGroup className='p-4 bg-background rounded-full'>
-                        <Button
-                            isIconOnly
-                            aria-label='Like'
-                            color='default'
-                            size='lg'
-                            variant='light'
-                        >
-                            <Heart />
-                        </Button>
-                        <Button
-                            isIconOnly
-                            aria-label='Add to list'
-                            color='default'
-                            size='lg'
-                            variant='light'
-                        >
-                            <ListPlus />
-                        </Button>
-                        <Button
-                            isIconOnly
-                            aria-label='Share'
-                            color='default'
-                            size='lg'
-                            variant='light'
-                        >
-                            <Share />
-                        </Button>
-                    </ButtonGroup>
-                </div>
             </div>
         </div>
     );

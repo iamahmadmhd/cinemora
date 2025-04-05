@@ -1,7 +1,24 @@
 @import 'tailwindcss';
 @config "../../tailwind.config.js";
 
-@theme {
+@property --scrollbar {
+    syntax: '<length>';
+    inherits: true;
+    initial-value: 0px;
+}
+
+.light,
+:root,
+[data-theme='light'] {
+    --default-foreground: #000000;
+}
+
+.dark,
+[data-theme='dark'] {
+    --default-foreground: #ffffff;
+}
+
+@theme inline {
     --color-default-50: #0d0c0d;
     --color-default-100: #1b1919;
     --color-default-200: #282526;
@@ -12,7 +29,7 @@
     --color-default-700: #b4b2b2;
     --color-default-800: #d9d8d9;
     --color-default-900: #ffffff;
-    --color-default-foreground: #fff;
+    --color-default-foreground: var(--default-foreground);
     --color-default: #433e3f;
 
     --color-primary-50: #002437;
@@ -79,9 +96,57 @@
     --color-danger-900: #fee1eb;
     --color-danger-foreground: #fff;
     --color-danger: #f31260;
+
+    --radius-5xl: 2.5rem;
 }
 
-html,
-body {
+html {
     font-family: 'Open Sans Variable', sans-serif;
+    container-type: inline-size;
+}
+
+body {
+    --scrollbar: calc(100vw - 100cqw);
+}
+
+@utility section-mask-x {
+    mask-image: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 1) 30%,
+        rgba(0, 0, 0, 1) 70%,
+        rgba(0, 0, 0, 0) 100%
+    );
+}
+
+@utility section-mask-r {
+    mask-image: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 1) 0%,
+        rgba(0, 0, 0, 1) 70%,
+        transparent 100%
+    );
+}
+
+@utility section-mask-l {
+    mask-image: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 1) 30%,
+        rgba(0, 0, 0, 1) 100%
+    );
+}
+
+@layer utilities {
+    .mr-break-out {
+        @apply max-w-6xl -mr-[calc((50vw-var(--scrollbar)/2)-50%)];
+    }
+
+    .ml-break-out {
+        @apply max-w-6xl -ml-[calc((50vw-var(--scrollbar)/2)-50%)];
+    }
+
+    .mx-break-out {
+        @apply max-w-6xl -mx-[calc((50vw-var(--scrollbar)/2)-50%)];
+    }
 }

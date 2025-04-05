@@ -1,6 +1,7 @@
 import { Header } from '@/components/header';
 import { Button, ButtonGroup } from '@heroui/button';
 import { Link } from '@heroui/link';
+import { EmblaOptionsType } from 'embla-carousel';
 import NextLink from 'next/link';
 import { fetchTrendingMedia } from './actions';
 import { MediaGrid } from '@/components/media-grid';

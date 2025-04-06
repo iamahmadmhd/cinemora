@@ -42,17 +42,23 @@ export function SignupForm() {
     } = useForm({
         resolver: zodResolver(schema),
     });
-    const [response, setResponse] = useState({ error: false, message: '' });
+    const [response, setResponse] = useState({
+        visible: false,
+        error: false,
+        message: '',
+    });
 
     const onSubmit = async (data: SignupFormProps) => {
         const { status, message } = await signup(data);
         if (status === 'error') {
             setResponse({
+                visible: true,
                 error: true,
                 message: message,
             });
         } else {
             setResponse({
+                visible: true,
                 error: false,
                 message: message,
             });
@@ -151,13 +157,17 @@ export function SignupForm() {
                     </Button>
                 </div>
             </div>
-            <div className='text-small text-default-500 mt-4'>
-                <span
-                    className={response.error ? 'text-danger' : 'text-success'}
-                >
-                    {response.message}
-                </span>
-            </div>
+            {response.visible && (
+                <div className='text-small text-default-500 mt-4'>
+                    <span
+                        className={
+                            response.error ? 'text-danger' : 'text-success'
+                        }
+                    >
+                        {response.message}
+                    </span>
+                </div>
+            )}
         </Form>
     );
 }

@@ -1,4 +1,4 @@
-create or replace table public.profiles (
+create table public.profiles (
   id uuid not null default gen_random_uuid (),
   user_id uuid not null,
   email character varying null default ''::character varying,
@@ -13,7 +13,7 @@ create or replace table public.profiles (
   constraint profiles_user_id_fkey foreign KEY (user_id) references auth.users (id) on update CASCADE on delete CASCADE
 ) TABLESPACE pg_default;
 
-create or replace table public.lists (
+create table public.lists (
   id uuid not null default gen_random_uuid (),
   user_id uuid null,
   username text not null,
@@ -27,7 +27,7 @@ create or replace table public.lists (
   constraint lists_user_id_fkey foreign KEY (user_id) references auth.users (id) on delete CASCADE
 ) TABLESPACE pg_default;
 
-create or replace table public.list_items (
+create table public.list_items (
   id uuid not null default gen_random_uuid (),
   list_id uuid null,
   external_id text not null,

@@ -5,6 +5,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { login } from '@/app/actions';
+import { useState } from 'react';
 
 // Define the schema for form validation using Zod
 const schema = z.object({
@@ -22,14 +23,31 @@ export function LoginForm() {
     const {
         register,
         handleSubmit,
-        getValues,
-        formState: { errors, isLoading, isSubmitted },
+        formState: { errors, isLoading },
     } = useForm({
         resolver: zodResolver(schema),
     });
+    const [response, setResponse] = useState({
+        visible: false,
+        error: false,
+        message: '',
+    });
 
     const onSubmit = async (data: LoginFormProps) => {
-        await login(data);
+        const { status, message } = await login(data);
+        if (status === 'error') {
+            setResponse({
+                visible: true,
+                error: true,
+                message: message,
+            });
+        } else {
+            setResponse({
+                visible: true,
+                error: false,
+                message: message,
+            });
+        }
     };
 
     return (
@@ -70,14 +88,13 @@ export function LoginForm() {
                         Submit
                     </Button>
                 </div>
-            </div>
 
-            {isSubmitted && (
-                <div className='text-small text-default-500 mt-4'>
-                    Submitted data:{' '}
-                    <pre>{JSON.stringify(getValues, null, 2)}</pre>
-                </div>
-            )}
+                {response.visible && response.error && (
+                    <div className='text-small text-default-500 mt-4'>
+                        <span className='text-danger'>{response.message}</span>
+                    </div>
+                )}
+            </div>
         </Form>
     );
 }

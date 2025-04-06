@@ -7,19 +7,19 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server';
 import { MediaBaseInterface, MediaType, MovieMedia, TVShowInterface, TVShowMedia } from 'src/types';
+import { SignupFormProps } from '@/components/forms/signup-form';
+import { LoginFormProps } from '@/components/forms/login-form';
 
 const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL;
 const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
 const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL;
 
-export async function login(formData: FormData) {
+export async function login(formData: LoginFormProps) {
     const supabase = await createClient()
 
-    // type-casting here for convenience
-    // in practice, you should validate your inputs
     const data = {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
+        email: formData.email,
+        password: formData.password,
     }
 
     const { error } = await supabase.auth.signInWithPassword(data)
@@ -32,17 +32,17 @@ export async function login(formData: FormData) {
     redirect('/')
 }
 
-export async function signup(formData: FormData) {
+export async function signup(formData: SignupFormProps) {
     const supabase = await createClient()
 
-    // type-casting here for convenience
-    // in practice, you should validate your inputs
     const data = {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
+        email: formData.email,
+        password: formData.password,
         options: {
-            firstname: formData.get('firstname'),
-            lastname: formData.get('lastname'),
+            data: {
+                firstname: formData.firstname,
+                lastname: formData.lastname,
+            },
             emailRedirectTo: '/login'
         }
     }

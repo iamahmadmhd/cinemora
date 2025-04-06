@@ -5,6 +5,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { signup } from '@/app/actions';
+import { useEffect, useState } from 'react';
 
 // Define the schema for form validation using Zod
 const schema = z
@@ -36,15 +37,31 @@ export function SignupForm() {
     const {
         register,
         handleSubmit,
-        getValues,
-        formState: { errors, isLoading, isSubmitted },
+        reset,
+        formState: { errors, isLoading },
     } = useForm({
         resolver: zodResolver(schema),
     });
+    const [response, setResponse] = useState({ error: false, message: '' });
 
     const onSubmit = async (data: SignupFormProps) => {
-        await signup(data);
+        const { status, message } = await signup(data);
+        if (status === 'error') {
+            setResponse({
+                error: true,
+                message: message,
+            });
+        } else {
+            setResponse({
+                error: false,
+                message: message,
+            });
+        }
     };
+
+    useEffect(() => {
+        if (!response.error) reset();
+    }, [response]);
 
     return (
         <Form
@@ -110,7 +127,7 @@ export function SignupForm() {
                         color='primary'
                         classNames={{
                             label: 'text-small',
-                            wrapper: 'before:border-foreground'
+                            wrapper: 'before:border-foreground',
                         }}
                         {...register('terms')}
                     >
@@ -134,13 +151,13 @@ export function SignupForm() {
                     </Button>
                 </div>
             </div>
-
-            {isSubmitted && (
-                <div className='text-small text-default-500 mt-4'>
-                    Submitted data:{' '}
-                    <pre>{JSON.stringify(getValues(), null, 2)}</pre>
-                </div>
-            )}
+            <div className='text-small text-default-500 mt-4'>
+                <span
+                    className={response.error ? 'text-danger' : 'text-success'}
+                >
+                    {response.message}
+                </span>
+            </div>
         </Form>
     );
 }

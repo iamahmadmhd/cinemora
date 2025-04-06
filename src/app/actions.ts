@@ -3,10 +3,16 @@
 import { MediaTypes } from '@/components/trending-section';
 import { getGenres } from '@/utils/helpers';
 import axios from 'axios';
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
-import { MediaBaseInterface, MediaType, MovieMedia, TVShowInterface, TVShowMedia } from 'src/types';
+import {
+    MediaBaseInterface,
+    MediaType,
+    MovieMedia,
+    TVShowInterface,
+    TVShowMedia,
+} from 'src/types';
 import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
 
@@ -14,29 +20,29 @@ const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL;
 const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
 const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL;
 
-export async function login(formData: LoginFormProps) {
-    const supabase = await createClient()
+const login = async (formData: LoginFormProps) => {
+    const supabase = await createClient();
 
     const data = {
         email: formData.email,
         password: formData.password,
-    }
+    };
 
-    const { error } = await supabase.auth.signInWithPassword(data)
+    const { error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
         return {
             status: 'error',
-            message: 'Something went wrong, please try again later.'
-        }
+            message: 'Something went wrong, please try again later.',
+        };
     }
 
-    revalidatePath('/', 'layout')
-    redirect('/dashboard')
-}
+    revalidatePath('/', 'layout');
+    redirect('/dashboard');
+};
 
-export async function signup(formData: SignupFormProps) {
-    const supabase = await createClient()
+const signup = async (formData: SignupFormProps) => {
+    const supabase = await createClient();
 
     const data = {
         email: formData.email,
@@ -46,25 +52,25 @@ export async function signup(formData: SignupFormProps) {
                 firstname: formData.firstname,
                 lastname: formData.lastname,
             },
-            emailRedirectTo: '/login'
-        }
-    }
+            emailRedirectTo: '/login',
+        },
+    };
 
-    const { error } = await supabase.auth.signUp(data)
+    const { error } = await supabase.auth.signUp(data);
 
     if (error) {
         return {
             status: 'error',
-            message: 'Something went wrong, please try again later.'
-        }
+            message: 'Something went wrong, please try again later.',
+        };
     }
 
-    revalidatePath('/', 'layout')
+    revalidatePath('/', 'layout');
     return {
         status: 'success',
         message: 'Please check your email to verify your account.',
-    }
-}
+    };
+};
 
 const fetchTrendingMedia = async (
     mediaType: keyof typeof MediaTypes
@@ -151,9 +157,8 @@ const fetchMovieById = async (movieId: string): Promise<MediaBaseInterface> => {
             overview: movieResponse.overview,
             mediaType: 'movie',
             genres:
-                movieResponse.genres?.map(
-                    (genre) => genre.name || 'Unknown'
-                ) ?? [],
+                movieResponse.genres?.map((genre) => genre.name || 'Unknown') ??
+                [],
             posterUrl: `${TMDB_IMAGES_URL}/w780${movieResponse.poster_path}`,
             backdropUrl: `${TMDB_IMAGES_URL}/w1280${movieResponse.backdrop_path}`,
             releaseDate: movieResponse.release_date,
@@ -191,9 +196,8 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
             overview: showResponse.overview,
             mediaType: 'tv',
             genres:
-                showResponse.genres?.map(
-                    (genre) => genre.name || 'Unknown'
-                ) ?? [],
+                showResponse.genres?.map((genre) => genre.name || 'Unknown') ??
+                [],
             posterUrl: `${TMDB_IMAGES_URL}/w780${showResponse.poster_path}`,
             backdropUrl: `${TMDB_IMAGES_URL}/w1280${showResponse.backdrop_path}`,
             releaseDate: showResponse.first_air_date,
@@ -212,4 +216,4 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     }
 };
 
-export { fetchTrendingMedia, fetchMovieById, fetchTVShowById };
+export { login, signup, fetchTrendingMedia, fetchMovieById, fetchTVShowById };

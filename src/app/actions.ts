@@ -25,11 +25,14 @@ export async function login(formData: LoginFormProps) {
     const { error } = await supabase.auth.signInWithPassword(data)
 
     if (error) {
-        redirect('/error')
+        return {
+            status: 'error',
+            message: 'Something went wrong, please try again later.'
+        }
     }
 
     revalidatePath('/', 'layout')
-    redirect('/')
+    redirect('/dashboard')
 }
 
 export async function signup(formData: SignupFormProps) {
@@ -50,11 +53,17 @@ export async function signup(formData: SignupFormProps) {
     const { error } = await supabase.auth.signUp(data)
 
     if (error) {
-        redirect('/error')
+        return {
+            status: 'error',
+            message: 'Something went wrong, please try again later.'
+        }
     }
 
     revalidatePath('/', 'layout')
-    redirect('/')
+    return {
+        status: 'success',
+        message: 'Please check your email to verify your account.',
+    }
 }
 
 const fetchTrendingMedia = async (

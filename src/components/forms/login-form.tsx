@@ -7,18 +7,14 @@ import { useForm } from 'react-hook-form';
 import { login } from '@/app/actions';
 
 // Define the schema for form validation using Zod
-const schema = z
-    .object({
-        email: z.string().email({ message: 'Invalid email address' }),
-        password: z
-            .string()
-            .min(8, 'Password must be at least 8 characters')
-            .regex(
-                /[A-Z]/,
-                'Password must contain at least one uppercase letter'
-            )
-            .regex(/[^a-z]/gi, 'Password must contain at least one symbol'),
-    })
+const schema = z.object({
+    email: z.string().email({ message: 'Invalid email address' }),
+    password: z
+        .string()
+        .min(8, 'Password must be at least 8 characters')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .regex(/[^a-z]/gi, 'Password must contain at least one symbol'),
+});
 
 export type LoginFormProps = z.infer<typeof schema>;
 

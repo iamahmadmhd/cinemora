@@ -6,7 +6,7 @@ import { EmblaOptionsType } from 'embla-carousel';
 import { Carousel } from '@/ui/carousel';
 import useSWR from 'swr';
 import { cn } from '@/utils/classname';
-import { MediaCard } from './ui/movie-card';
+import { MediaCard } from './ui/media-card';
 import { MediaBaseInterface } from 'src/types';
 
 interface MediaSliderProps {
@@ -39,7 +39,7 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
     return (
         <div className={cn('flex flex-col gap-8', className)}>
             {headline && (
-                <div className='px-6 flex justify-between items-center'>
+                <div className='flex justify-between items-center'>
                     <h2 className='text-2xl font-bold'>{headline}</h2>
                     <Button
                         as={NextLink}

@@ -2,30 +2,51 @@
 
 import { Button, ButtonGroup, PressEvent } from '@heroui/button';
 import { fetchTrendingMedia } from '@/app/actions';
-import { MediaGrid } from '@/components/media-grid';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { cn } from '@/utils/classname';
+import { MediaSlider } from './media-slider';
 
-export enum MediaTypes {
-    all = 'Movies and TV Shows',
-    movie = 'Movies',
-    tv = 'TV Shows',
+interface ContentType {
+    headline: string;
+    button: string;
+    link: string;
 }
+
+const content: Record<'all' | 'movie' | 'tv', ContentType> = {
+    all: {
+        headline: 'Trending Movies and TV Shows',
+        button: 'All',
+        link: '/trending/all',
+    },
+    movie: {
+        headline: 'Trending Movies',
+        button: 'Movies',
+        link: '/trending/movie',
+    },
+    tv: {
+        headline: 'Trending TV Shows',
+        button: 'TV Shows',
+        link: '/trending/tv',
+    },
+};
+
+type MediaTypes = keyof typeof content;
 
 interface TrendingSectionProps {
     className?: string;
 }
 
-const TrendingSection = (props: TrendingSectionProps) => {
-    const { className } = props;
-
-    const [mediaType, setMediaType] = useState<keyof typeof MediaTypes>('all');
+const TrendingSection = ({ className }: TrendingSectionProps) => {
+    const [mediaType, setMediaType] = useState<MediaTypes>('all');
     const fetchKey = `trending-${mediaType}`;
 
-    const handleButtonClick = (e: PressEvent) => {
-        const selectedType = (e.target as HTMLButtonElement).value;
-        setMediaType(selectedType as keyof typeof MediaTypes);
-    };
+    const handleButtonClick = useCallback((e: PressEvent) => {
+        const selectedType = (e.target as HTMLButtonElement)
+            .value as MediaTypes;
+        if (content[selectedType]) {
+            setMediaType(selectedType);
+        }
+    }, []);
 
     return (
         <section className={cn('py-20', className)}>
@@ -34,29 +55,34 @@ const TrendingSection = (props: TrendingSectionProps) => {
                     variant='flat'
                     className='w-full md:w-auto'
                 >
-                    {Object.keys(MediaTypes).map((type) => (
+                    {(Object.keys(content) as MediaTypes[]).map((item) => (
                         <Button
-                            key={type}
+                            key={item}
                             onPress={handleButtonClick}
-                            value={type}
-                            color={mediaType === type ? 'secondary' : 'default'}
+                            value={item}
+                            color={mediaType === item ? 'secondary' : 'default'}
                             className='w-full'
                         >
-                            {type === 'all'
-                                ? 'All'
-                                : MediaTypes[type as keyof typeof MediaTypes]}
+                            {content[item].button}
                         </Button>
                     ))}
                 </ButtonGroup>
             </div>
-            <MediaGrid
-                headline={`Trending ${MediaTypes[mediaType]}`}
-                link={`/${mediaType}`}
+            <MediaSlider
+                sliderOptions={{
+                    slidesToScroll: 1,
+                    align: 'start',
+                    container: 'carousel-container',
+                }}
                 fetchKey={fetchKey}
                 fetchFunction={() => fetchTrendingMedia(mediaType)}
+                className='mb-8'
+                headline={content[mediaType].headline}
+                link={content[mediaType].link}
             />
         </section>
     );
 };
 
 export { TrendingSection };
+export type { MediaTypes };

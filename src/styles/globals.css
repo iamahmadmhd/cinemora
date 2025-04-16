@@ -123,17 +123,3 @@ body {
         rgba(0, 0, 0, 1) 100%
     );
 }
-
-@layer utilities {
-    .mr-break-out {
-        @apply max-w-6xl -mr-[calc((50vw-var(--scrollbar)/2)-50%)];
-    }
-
-    .ml-break-out {
-        @apply max-w-6xl -ml-[calc((50vw-var(--scrollbar)/2)-50%)];
-    }
-
-    .mx-break-out {
-        @apply max-w-6xl -mx-[calc((50vw-var(--scrollbar)/2)-50%)];
-    }
-}

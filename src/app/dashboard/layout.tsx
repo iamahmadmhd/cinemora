@@ -1,23 +1,22 @@
 import { Header } from '@/components/header';
-import { createClient } from '@/utils/supabase/server';
+import { Button } from '@heroui/button';
 import { Link } from '@heroui/link';
 import NextLink from 'next/link';
-import { redirect } from 'next/navigation';
 
-export default async function Layout({
+const navItems = [
+    { label: 'Movies', href: '/movie' },
+    { label: 'TV Shows', href: '/tv' },
+];
+
+export default function Layout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const supabase = await createClient();
-
-    const { data } = await supabase.auth.getUser();
-    if (data?.user) {
-        redirect('/dashboard');
-    }
     return (
         <>
             <Header
+                navItems={navItems}
                 logo={
                     <Link
                         as={NextLink}
@@ -27,6 +26,17 @@ export default async function Layout({
                     >
                         Cinemora
                     </Link>
+                }
+                button={
+                    <Button
+                        as={NextLink}
+                        href='/login'
+                        color='primary'
+                        variant='flat'
+                        size='sm'
+                    >
+                        Login
+                    </Button>
                 }
             />
             <main className='max-w-[1200px] mx-auto px-6 py-20'>

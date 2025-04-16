@@ -19,9 +19,9 @@ const HeroDetail = (props: HeroDetailProps) => {
                     className='object-cover rounded-5xl'
                 />
             </div>
-            <div className='-translate-y-14 gap-8 grid grid-cols-1 md:grid-cols-2 md:px-10 px-3 w-full z-30'>
+            <div className='-translate-y-14 md:px-10 px-3 w-full z-30'>
                 <div className='p-6 md:p-10 rounded-3xl backdrop-blur-lg bg-primary-50/40'>
-                    <h1 className='text-4xl font-medium text-white'>{title}</h1>
+                    <h1 className='text-4xl font-medium text-white text-center'>{title}</h1>
                 </div>
             </div>
         </div>

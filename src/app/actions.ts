@@ -124,7 +124,7 @@ const fetchTrendingMedia = async (
                             (id: number) => genres[id] || 'Unknown'
                         ) ?? [],
                     posterUrl:
-                        process.env.NODE_ENV !== 'development'
+                        process.env.NODE_ENV === 'development'
                             ? '/images/2149946322.jpg'
                             : `${TMDB_IMAGES_URL}/w342${media.poster_path}`,
                     href: `/${media.media_type}/${media.id}`,

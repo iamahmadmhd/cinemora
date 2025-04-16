@@ -12,7 +12,7 @@ export default function LoginPage() {
                     href='/signup'
                     className='text-primary-500 hover:underline'
                 >
-                    Sign Up
+                    Sign up
                 </Link>
             </p>
         </div>

@@ -15,7 +15,11 @@ const MediaCard = ({ content }: { content: MediaBaseInterface }) => {
             className='py-4 h-full shadow-sm'
         >
             <CardBody className='overflow-visible relative flex-none py-2'>
-                <Chip startContent={<Star size={18} />} className='absolute z-20 m-4' color='warning'>
+                <Chip
+                    startContent={<Star size={18} />}
+                    className='absolute z-20 m-4'
+                    color='warning'
+                >
                     {voteAverage.toFixed(1)}
                 </Chip>
                 <Image

@@ -1,30 +1,33 @@
 import { Image } from '@heroui/image';
+import { Card, CardFooter, CardProps } from '@heroui/card';
 import NextImage from 'next/image';
+import { cn } from '@/utils/classname';
 
-interface HeroDetailProps {
+interface HeroDetailProps extends CardProps {
     title: string;
     backdropUrl: string;
 }
 const HeroDetail = (props: HeroDetailProps) => {
-    const { title, backdropUrl } = props;
+    const { title, backdropUrl, className, ...restProps } = props;
     return (
-        <div className='hero relative flex flex-col'>
-            <div className='relative w-full rounded-large overflow-hidden'>
-                <Image
-                    as={NextImage}
-                    src={backdropUrl}
-                    alt={title}
-                    width={1200}
-                    height={480}
-                    className='object-cover rounded-5xl'
-                />
-            </div>
-            <div className='-translate-y-14 md:px-10 px-3 w-full z-30'>
-                <div className='p-6 md:p-10 rounded-3xl backdrop-blur-lg bg-primary-50/40'>
-                    <h1 className='text-4xl font-medium text-white text-center'>{title}</h1>
-                </div>
-            </div>
-        </div>
+        <Card
+            isFooterBlurred
+            className={cn('border-none', className)}
+            radius='lg'
+            {...restProps}
+        >
+            <Image
+                as={NextImage}
+                src={backdropUrl}
+                alt={title}
+                width={1200}
+                height={480}
+                className='object-cover'
+            />
+            <CardFooter className='justify-center before:bg-white/10 border-white/20 border-1 overflow-hidden py-4 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10'>
+                <h1 className='font-semibold text-3xl'>{title}</h1>
+            </CardFooter>
+        </Card>
     );
 };
 

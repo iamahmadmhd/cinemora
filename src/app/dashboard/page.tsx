@@ -12,6 +12,13 @@ export default async function PrivatePage() {
         redirect('/login');
     }
 
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select()
+        .eq('user_id', data.user.id);
+
+    console.log({ profile });
+
     return (
         <>
             <p>Hello {data.user.email}</p>

@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import { cn } from '@/utils/classname';
 import { MediaCard } from './ui/media-card';
 import { Skeleton } from './ui/skeleton';
-import { MediaBaseInterface } from 'src/types';
+import { MediaBaseInterface } from 'src/types/types';
 
 interface MediaGridProps {
     headline?: string;
@@ -52,11 +52,11 @@ const MediaGrid: React.FC<MediaGridProps> = ({
                 {isLoading
                     ? [...Array(8)].map((_, index) => <Skeleton key={index} />)
                     : data?.map((item) => (
-                          <MediaCard
-                              key={item.id}
-                              content={item}
-                          />
-                      ))}
+                        <MediaCard
+                            key={item.id}
+                            content={item}
+                        />
+                    ))}
             </div>
         </div>
     );

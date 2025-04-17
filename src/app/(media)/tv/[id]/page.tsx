@@ -30,7 +30,9 @@ export default async function MoviePage({
     return (
         <div className='grid gap-y-20'>
             <HeroDetail
+                id={showId}
                 title={title}
+                description={overview}
                 backdropUrl={backdropUrl ?? ''}
             />
             <MediaDetail

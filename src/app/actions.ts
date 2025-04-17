@@ -12,7 +12,7 @@ import {
     MovieMedia,
     TVShowInterface,
     TVShowMedia,
-} from 'src/types';
+} from 'src/types/types';
 import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
 

@@ -1,9 +1,4 @@
-import React, {
-    ReactNode,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { cn } from '@/utils/classname';

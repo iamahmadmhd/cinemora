@@ -3,7 +3,7 @@ import { Chip } from '@heroui/chip';
 import { Star } from 'lucide-react';
 import NextImage from 'next/image';
 import React from 'react';
-import { TVShowInterface } from 'src/types';
+import { TVShowInterface } from 'src/types/types';
 
 enum MediaType {
     movie = 'Movie',

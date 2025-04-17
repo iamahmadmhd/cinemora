@@ -7,7 +7,7 @@ import { Carousel } from '@/ui/carousel';
 import useSWR from 'swr';
 import { cn } from '@/utils/classname';
 import { MediaCard } from './ui/media-card';
-import { MediaBaseInterface } from 'src/types';
+import { MediaBaseInterface } from 'src/types/types';
 
 interface MediaSliderProps {
     headline?: string;

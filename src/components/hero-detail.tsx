@@ -1,17 +1,22 @@
+'use client';
+
 import { Image } from '@heroui/image';
 import { Card, CardFooter, CardProps } from '@heroui/card';
 import NextImage from 'next/image';
 import { cn } from '@/utils/classname';
 import { Button } from '@heroui/button';
 import { Tooltip } from '@heroui/tooltip';
-import { Heart, ListPlus } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import WatchlistButton from './ui/watchlist-button';
 
 interface HeroDetailProps extends CardProps {
+    id: string;
     title: string;
+    description: string;
     backdropUrl: string;
 }
 const HeroDetail = (props: HeroDetailProps) => {
-    const { title, backdropUrl, className, ...restProps } = props;
+    const { id, title, description, backdropUrl, className, ...restProps } = props;
     return (
         <Card
             isFooterBlurred
@@ -28,15 +33,16 @@ const HeroDetail = (props: HeroDetailProps) => {
                 className='object-cover'
             />
             <CardFooter className='justify-between flex-wrap gap-y-4 border-white/20 border-1 overflow-hidden py-4 absolute rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10'>
-                <h1 className='w-full md:w-1/2 font-semibold text-3xl text-center md:text-left'>{title}</h1>
-                <div className="w-full md:w-1/2 flex gap-4 justify-center md:justify-end items-center">
+                <h1 className='w-full md:w-1/2 font-semibold text-3xl text-center md:text-left text-white'>
+                    {title}
+                </h1>
+                <div className='w-full md:w-1/2 flex gap-4 justify-center md:justify-end items-center'>
                     <Tooltip
                         content='Like'
                         placement='bottom'
                     >
                         <Button
                             isIconOnly
-                            variant='flat'
                             color='danger'
                         >
                             <Heart size={18} />
@@ -46,13 +52,7 @@ const HeroDetail = (props: HeroDetailProps) => {
                         content='Add to watchlist'
                         placement='bottom'
                     >
-                        <Button
-                            isIconOnly
-                            variant='flat'
-                            color='primary'
-                        >
-                            <ListPlus size={18} />
-                        </Button>
+                        <WatchlistButton externalId={id} title={title} description={description} />
                     </Tooltip>
                 </div>
             </CardFooter>
@@ -61,3 +61,4 @@ const HeroDetail = (props: HeroDetailProps) => {
 };
 
 export { HeroDetail };
+export type { HeroDetailProps };

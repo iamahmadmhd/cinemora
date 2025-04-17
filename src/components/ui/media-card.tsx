@@ -3,7 +3,7 @@ import { Chip } from '@heroui/chip';
 import { Image } from '@heroui/image';
 import NextLink from 'next/link';
 import { Star } from 'lucide-react';
-import { MediaBaseInterface } from 'src/types';
+import { MediaBaseInterface } from 'src/types/types';
 import { Link } from '@heroui/link';
 
 const MediaCard = ({ content }: { content: MediaBaseInterface }) => {

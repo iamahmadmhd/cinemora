@@ -1,14 +1,23 @@
+import { Profile, ProfileProvider } from '@/components/providers/profile-provider';
+import { createClient } from '@/utils/supabase/server';
 import { HeroUIProvider } from '@heroui/system';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export async function Providers({ children }: { children: React.ReactNode }) {
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    const { data } = await supabase.from('profiles').select().eq('user_id', user?.id);
+    const profile = data as Profile;
+
     return (
         <HeroUIProvider>
             <NextThemesProvider
                 attribute='class'
                 defaultTheme='system'
             >
-                {children}
+                <ProfileProvider initialProfile={profile}>{children}</ProfileProvider>
             </NextThemesProvider>
         </HeroUIProvider>
     );

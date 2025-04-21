@@ -46,8 +46,8 @@ export default function Home() {
                         </h1>
                         <p className='mb-8 text-center'>
                             Discover the latest movies and TV shows, all in one
-                            place. Add your favorites to your lists, share your
-                            lists with your friends and never miss a release!
+                            place. Add your favorites to your watchlist and
+                            never miss a release!
                         </p>
                         <Button
                             as={NextLink}

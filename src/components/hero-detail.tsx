@@ -4,10 +4,7 @@ import { Image } from '@heroui/image';
 import { Card, CardFooter, CardProps } from '@heroui/card';
 import NextImage from 'next/image';
 import { cn } from '@/utils/classname';
-import { Button } from '@heroui/button';
-import { Tooltip } from '@heroui/tooltip';
-import { Heart } from 'lucide-react';
-import WatchlistButton from './ui/watchlist-button';
+import { WatchlistButton } from './ui/watchlist-button';
 
 interface HeroDetailProps extends CardProps {
     id: string;
@@ -16,7 +13,8 @@ interface HeroDetailProps extends CardProps {
     backdropUrl: string;
 }
 const HeroDetail = (props: HeroDetailProps) => {
-    const { id, title, description, backdropUrl, className, ...restProps } = props;
+    const { id, title, description, backdropUrl, className, ...restProps } =
+        props;
     return (
         <Card
             isFooterBlurred
@@ -37,23 +35,11 @@ const HeroDetail = (props: HeroDetailProps) => {
                     {title}
                 </h1>
                 <div className='w-full md:w-1/2 flex gap-4 justify-center md:justify-end items-center'>
-                    <Tooltip
-                        content='Like'
-                        placement='bottom'
-                    >
-                        <Button
-                            isIconOnly
-                            color='danger'
-                        >
-                            <Heart size={18} />
-                        </Button>
-                    </Tooltip>
-                    <Tooltip
-                        content='Add to watchlist'
-                        placement='bottom'
-                    >
-                        <WatchlistButton externalId={id} title={title} description={description} />
-                    </Tooltip>
+                    <WatchlistButton
+                        externalId={id}
+                        title={title}
+                        description={description}
+                    />
                 </div>
             </CardFooter>
         </Card>

@@ -4,9 +4,9 @@ import { Button } from '@heroui/button';
 import NextLink from 'next/link';
 import useSWR from 'swr';
 import { cn } from '@/utils/classname';
-import { MediaCard } from './ui/movie-card';
+import { MediaCard } from './ui/media-card';
 import { Skeleton } from './ui/skeleton';
-import { MediaBaseInterface } from 'src/types';
+import { MediaBaseInterface } from 'src/types/types';
 
 interface MediaGridProps {
     headline?: string;

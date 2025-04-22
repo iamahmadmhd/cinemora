@@ -1,9 +1,10 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronsLeftRightEllipsis } from 'lucide-react';
 import { cn } from '@/utils/classname';
 import { Skeleton } from './skeleton';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button, ButtonProps } from '@heroui/button';
 
 type UsePrevNextButtonsType = {
     prevBtnDisabled: boolean;
@@ -94,6 +95,44 @@ const useDotButton = (
     };
 };
 
+type ControlButtonProps = ButtonProps & {
+    children?: ReactNode;
+};
+
+export const PrevButton: React.FC<ControlButtonProps> = (props) => {
+    const { children, className, ...restProps } = props;
+
+    return (
+        <Button
+            className={cn('embla__button embla__button--prev', className)}
+            variant='solid'
+            radius='full'
+            isIconOnly
+            {...restProps}
+        >
+            <ChevronLeft size={24} />
+            {children}
+        </Button>
+    );
+};
+
+export const NextButton: React.FC<ControlButtonProps> = (props) => {
+    const { children, className, ...restProps } = props;
+
+    return (
+        <Button
+            className={cn('embla__button embla__button--prev', className)}
+            variant='solid'
+            radius='full'
+            isIconOnly
+            {...restProps}
+        >
+            <ChevronRight size={24} />
+            {children}
+        </Button>
+    );
+};
+
 interface CarouselProps {
     options: EmblaOptionsType;
     loading: boolean;
@@ -103,32 +142,49 @@ interface CarouselProps {
 
 const Carousel: React.FC<CarouselProps> = (props) => {
     const { options, loading, className, children } = props;
-    const [emblaRef] = useEmblaCarousel(options);
+    const [emblaRef, emblaApi] = useEmblaCarousel(options);
+
+    const {
+        prevBtnDisabled,
+        nextBtnDisabled,
+        onPrevButtonClick,
+        onNextButtonClick,
+    } = usePrevNextButtons(emblaApi);
 
     return (
-        <div className={cn(className)}>
+        <div className={cn('relative', className)}>
             <div
-                className='overflow-hidden grid gap-y-8'
+                className='overflow-hidden py-5'
                 ref={emblaRef}
             >
-                <div className='flex -ml-4 touch-pan-y touch-pinch-zoom'>
+                <div className='carousel-container flex -ml-4 touch-pan-y touch-pinch-zoom'>
                     {[
                         ...(loading
-                            ? [1, 2, 3, 4, 5]
+                            ? [1, 2, 3, 4]
                             : React.Children.toArray(children)),
                     ].map((item, index) => (
                         <div
                             key={index}
-                            className='pl-4 flex-[0_0_25%]'
+                            className='pl-4 translate-3d flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_25%]'
                         >
                             {loading ? <Skeleton key={index} /> : item}
                         </div>
                     ))}
                 </div>
             </div>
-
-            <div className='flex lg:hidden container max-w-xs mx-auto px-4 items-center justify-center mt-6'>
-                <ChevronsLeftRightEllipsis size={40} />
+            <div className='carousel__controls'>
+                <div className='carousel__buttons'>
+                    <PrevButton
+                        onPress={onPrevButtonClick}
+                        className='absolute top-1/2 left-0 -translate-y-1/2 m-4'
+                        isDisabled={prevBtnDisabled}
+                    />
+                    <NextButton
+                        onPress={onNextButtonClick}
+                        className='absolute top-1/2 right-0 -translate-y-1/2 m-4'
+                        isDisabled={nextBtnDisabled}
+                    />
+                </div>
             </div>
         </div>
     );

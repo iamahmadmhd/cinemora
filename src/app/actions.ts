@@ -12,7 +12,7 @@ import {
     MovieMedia,
     TVShowInterface,
     TVShowMedia,
-} from 'src/types';
+} from 'src/types/types';
 import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
 
@@ -33,7 +33,7 @@ const login = async (formData: LoginFormProps) => {
     if (error) {
         return {
             status: 'error',
-            message: 'Something went wrong, please try again later.',
+            message: error.message,
         };
     }
 
@@ -61,7 +61,7 @@ const signup = async (formData: SignupFormProps) => {
     if (error) {
         return {
             status: 'error',
-            message: 'Something went wrong, please try again later.',
+            message: error.message,
         };
     }
 
@@ -72,8 +72,21 @@ const signup = async (formData: SignupFormProps) => {
     };
 };
 
+const signout = async () => {
+    const supabase = await createClient();
+    // Check if a user's logged in
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+        await supabase.auth.signOut();
+    }
+    revalidatePath('/', 'layout');
+    redirect('/login');
+};
+
 const fetchTrendingMedia = async (
-    mediaType: keyof typeof MediaTypes
+    mediaType: MediaTypes
 ): Promise<MediaBaseInterface[]> => {
     const genreUrl = `${TMDB_API_URL}/genre/movie/list`;
     console.log({ mediaType });
@@ -216,4 +229,11 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     }
 };
 
-export { login, signup, fetchTrendingMedia, fetchMovieById, fetchTVShowById };
+export {
+    login,
+    signup,
+    signout,
+    fetchTrendingMedia,
+    fetchMovieById,
+    fetchTVShowById,
+};

@@ -3,7 +3,7 @@ import { Chip } from '@heroui/chip';
 import { Star } from 'lucide-react';
 import NextImage from 'next/image';
 import React from 'react';
-import { TVShowInterface } from 'src/types';
+import { TVShowInterface } from 'src/types/types';
 
 enum MediaType {
     movie = 'Movie',
@@ -31,18 +31,7 @@ const MediaDetail = (props: MediaDetailProps) => {
         originCountry,
     } = props;
     return (
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-12 md:px-10'>
-            <div className='hidden md:block'>
-                <Image
-                    removeWrapper
-                    as={NextImage}
-                    src={posterUrl}
-                    alt={title}
-                    width={480}
-                    height={720}
-                    className='object-cover rounded-3xl mx-auto'
-                />
-            </div>
+        <div className='max-w-2xl mx-auto'>
             <div className='flex flex-col gap-y-6'>
                 <h2 className='text-xl'>{tagline}</h2>
                 <p>{overview}</p>

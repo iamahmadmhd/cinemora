@@ -1,12 +1,20 @@
 import { Header } from '@/components/header';
+import { createClient } from '@/utils/supabase/server';
 import { Link } from '@heroui/link';
 import NextLink from 'next/link';
+import { redirect } from 'next/navigation';
 
-export default function Layout({
+export default async function Layout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const supabase = await createClient();
+
+    const { data } = await supabase.auth.getUser();
+    if (data?.user) {
+        redirect('/dashboard');
+    }
     return (
         <>
             <Header

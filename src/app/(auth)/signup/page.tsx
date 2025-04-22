@@ -1,5 +1,6 @@
 import { SignupForm } from '@/components/forms/signup-form';
-import Link from 'next/link';
+import { Link } from '@heroui/link';
+import NextLink from 'next/link';
 
 export default function SignUpPage() {
     return (
@@ -9,6 +10,7 @@ export default function SignUpPage() {
             <p className='text-sm text-default-500'>
                 Already have an account?{' '}
                 <Link
+                    as={NextLink}
                     href='/login'
                     className='text-primary-500 hover:underline'
                 >

@@ -20,7 +20,9 @@
         ],
         "baseUrl": ".",
         "paths": {
+            "@/*": ["src/*"],
             "@/app/*": ["src/app/*"],
+            "@/types/*": ["src/types/*"],
             "@/components/*": ["src/components/*"],
             "@/ui/*": ["src/components/ui/*"],
             "@/styles/*": ["src/styles/*"],

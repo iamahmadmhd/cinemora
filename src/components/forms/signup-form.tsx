@@ -49,25 +49,24 @@ export function SignupForm() {
     });
 
     const onSubmit = async (data: SignupFormProps) => {
-        const { status, message } = await signup(data);
-        if (status === 'error') {
-            setResponse({
-                visible: true,
-                error: true,
-                message: message,
-            });
-        } else {
+        try {
+            const { message } = await signup(data);
             setResponse({
                 visible: true,
                 error: false,
                 message: message,
             });
+        } catch (error) {
+            setResponse({
+                visible: true,
+                error: true,
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'An unknown error occurred',
+            });
         }
     };
-
-    useEffect(() => {
-        if (!response.error) reset();
-    }, [response]);
 
     return (
         <Form

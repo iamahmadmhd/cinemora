@@ -26,9 +26,11 @@ export default async function MoviePage({
     const countryNames = getDisplayCountryNames(originCountry);
 
     return (
-        <div>
+        <div className='grid gap-y-20'>
             <HeroDetail
+                id={movieId}
                 title={title}
+                description={overview}
                 backdropUrl={backdropUrl ?? ''}
             />
             <MediaDetail

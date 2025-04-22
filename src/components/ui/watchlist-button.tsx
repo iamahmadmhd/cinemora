@@ -5,7 +5,8 @@ import { addToast } from '@heroui/react';
 import { Tooltip } from '@heroui/tooltip';
 import axios from 'axios';
 import { ListPlus } from 'lucide-react';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useAuth } from '@/providers/use-auth';
 
 type WatchlistButtonProps = {
     externalId: string;
@@ -27,18 +28,22 @@ type ToastOptions = {
     timeout?: number;
 };
 
-const toastOptions: ToastOptions = {
-    variant: 'flat',
-    timeout: 5000,
-};
-
 const WatchlistButton = ({
     externalId,
     title,
     description,
 }: WatchlistButtonProps) => {
-    const [isAdded, setIsAdded] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [isAdded, setIsAdded] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const { isLoggedIn } = useAuth();
+
+    const toastOptions: ToastOptions = useMemo(
+        () => ({
+            variant: 'flat',
+            timeout: 5000,
+        }),
+        []
+    );
 
     const checkItem = useCallback(async () => {
         try {
@@ -50,54 +55,67 @@ const WatchlistButton = ({
         } catch (error) {
             console.error('Failed to check item availability:', error);
         }
-    }, [isAdded]);
+    }, [externalId]);
 
-    useEffect(() => {
-        checkItem();
-    }, [checkItem]);
+    const addItemToWatchlist = async () => {
+        try {
+            await axios.post('/api/watchlist/add', {
+                externalId,
+                title,
+                description,
+            });
+            setIsAdded(true);
+            addToast({
+                title: 'Added to watchlist',
+                ...toastOptions,
+            });
+        } catch (error) {
+            console.error('Failed to add item to watchlist:', error);
+            addToast({
+                title: 'Failed to add item to watchlist',
+            });
+        }
+    };
 
-    const handleAdd = async () => {
+    const removeItemFromWatchlist = async () => {
+        try {
+            await axios.post('/api/watchlist/delete', {
+                externalId,
+            });
+            setIsAdded(false);
+            addToast({
+                title: 'Removed from watchlist',
+                ...toastOptions,
+            });
+        } catch (error) {
+            console.error('Failed to remove item from watchlist:', error);
+            addToast({
+                title: 'Failed to remove item from watchlist',
+            });
+        }
+    };
+
+    const handleClick = async () => {
+        if (!isLoggedIn) {
+            addToast({
+                title: 'Please log in to add items to your watchlist',
+                color: 'warning',
+                ...toastOptions,
+            });
+            return;
+        }
         setLoading(true);
-        if (!isAdded) {
-            try {
-                await axios.post('/api/watchlist/add', {
-                    externalId,
-                    title,
-                    description,
-                });
-                setIsAdded(true);
-                addToast({
-                    title: 'Added to watchlist',
-                    ...toastOptions,
-                });
-            } catch {
-                addToast({
-                    title: 'Failed to add item to watchlist',
-                });
-            }
+        if (isAdded) {
+            await removeItemFromWatchlist();
         } else {
-            try {
-                await axios.post('/api/watchlist/delete', {
-                    externalId,
-                });
-                setIsAdded(false);
-                addToast({
-                    title: 'Removed from watchlist',
-                    color: 'danger',
-                    ...toastOptions,
-                });
-            } catch {
-                addToast({
-                    title: 'Failed to remove item from watchlist',
-                });
-            }
+            await addItemToWatchlist();
         }
         setLoading(false);
     };
 
     useEffect(() => {
-        console.log('isAdded:', isAdded);
-    }, [isAdded]);
+        checkItem();
+    }, [checkItem]);
 
     return (
         <Tooltip
@@ -109,7 +127,7 @@ const WatchlistButton = ({
                 variant={isAdded ? 'flat' : 'solid'}
                 color='primary'
                 isLoading={loading}
-                onPress={handleAdd}
+                onPress={handleClick}
             >
                 <ListPlus size={18} />
             </Button>

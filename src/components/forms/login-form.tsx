@@ -34,18 +34,21 @@ export function LoginForm() {
     });
 
     const onSubmit = async (data: LoginFormProps) => {
-        const { status, message } = await login(data);
-        if (status === 'error') {
-            setResponse({
-                visible: true,
-                error: true,
-                message: message,
-            });
-        } else {
+        try {
+            const { message } = await login(data);
             setResponse({
                 visible: true,
                 error: false,
                 message: message,
+            });
+        } catch (error) {
+            setResponse({
+                visible: true,
+                error: true,
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'An unknown error occurred',
             });
         }
     };

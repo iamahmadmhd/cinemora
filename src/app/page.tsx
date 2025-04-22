@@ -1,10 +1,10 @@
-import { Header } from '@/components/header';
 import { Button } from '@heroui/button';
-import { Link } from '@heroui/link';
-import NextLink from 'next/link';
 import { TrendingSection } from '@/components/trending-section';
 import { Image } from '@heroui/image';
+import { Link } from '@heroui/link';
+import NextLink from 'next/link';
 import NextImage from 'next/image';
+import { Header } from '@/components/header';
 
 const navItems = [
     { label: 'Movies', href: '/movie' },
@@ -26,17 +26,7 @@ export default function Home() {
                         Cinemora
                     </Link>
                 }
-                button={
-                    <Button
-                        as={NextLink}
-                        href='/login'
-                        color='primary'
-                        variant='flat'
-                        size='sm'
-                    >
-                        Login
-                    </Button>
-                }
+                showButton
             />
             <main>
                 <section className='py-20 relative min-h-96'>
@@ -50,7 +40,7 @@ export default function Home() {
                             never miss a release!
                         </p>
                         <Button
-                            as={NextLink}
+                            as={Link}
                             href='/signup'
                             color='primary'
                         >

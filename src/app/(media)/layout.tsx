@@ -1,5 +1,4 @@
 import { Header } from '@/components/header';
-import { Button } from '@heroui/button';
 import { Link } from '@heroui/link';
 import NextLink from 'next/link';
 
@@ -27,17 +26,7 @@ export default function Layout({
                         Cinemora
                     </Link>
                 }
-                button={
-                    <Button
-                        as={NextLink}
-                        href='/login'
-                        color='primary'
-                        variant='flat'
-                        size='sm'
-                    >
-                        Login
-                    </Button>
-                }
+                showButton
             />
             <main className='max-w-[1200px] mx-auto px-6 py-20'>
                 {children}

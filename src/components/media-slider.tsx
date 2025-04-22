@@ -1,13 +1,13 @@
 'use client';
 
 import { Button } from '@heroui/button';
-import NextLink from 'next/link';
 import { EmblaOptionsType } from 'embla-carousel';
 import { Carousel } from '@/ui/carousel';
 import useSWR from 'swr';
 import { cn } from '@/utils/classname';
 import { MediaCard } from './ui/media-card';
 import { MediaBaseInterface } from 'src/types/types';
+import NextLink from 'next/link';
 
 interface MediaSliderProps {
     headline?: string;

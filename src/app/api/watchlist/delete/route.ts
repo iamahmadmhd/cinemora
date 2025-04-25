@@ -3,40 +3,40 @@ import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
     const supabase = await createClient();
-    const { externalId } = await req.json();
+    const { movieId } = await req.json();
 
     const {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!externalId) {
-        return NextResponse.json({
-            status: 'error',
-            message: 'Please provide an external id.',
-        });
+    if (!movieId) {
+        return NextResponse.json(
+            {
+                message: 'Please provide an external id.',
+            },
+            { status: 400 }
+        );
     }
 
-    const { data: watchlist } = await supabase
+    const { error } = await supabase
         .from('watchlists')
-        .select()
-        .eq('user_id', user?.id)
-        .single();
-
-    const { data, error } = await supabase
-        .from('list_items')
         .delete()
         .eq('user_id', user?.id)
-        .eq('list_id', watchlist.id);
+        .eq('movie_id', movieId);
 
-    if (!data || error) {
-        return NextResponse.json({
-            status: 'error',
-            message: 'An error occured',
-        });
+    if (error) {
+        return NextResponse.json(
+            {
+                message: error.message,
+            },
+            { status: error.code as unknown as number }
+        );
     }
 
-    return NextResponse.json({
-        status: 'success',
-        message: 'Item deleted successfully',
-    });
+    return NextResponse.json(
+        {
+            message: 'Item deleted successfully',
+        },
+        { status: 200 }
+    );
 }

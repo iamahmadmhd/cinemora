@@ -17,13 +17,11 @@ type MediaDetailProps = Omit<
 
 const MediaDetail = (props: MediaDetailProps) => {
     const {
-        title,
         tagline,
         overview,
         mediaType,
         genres,
         releaseDate,
-        posterUrl,
         voteAverage,
         status,
         numberOfSeasons,

@@ -9,7 +9,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAuth } from '@/providers/use-auth';
 
 type WatchlistButtonProps = {
-    externalId: string;
+    movieId: string;
     title: string;
     description: string;
 };
@@ -29,7 +29,7 @@ type ToastOptions = {
 };
 
 const WatchlistButton = ({
-    externalId,
+    movieId,
     title,
     description,
 }: WatchlistButtonProps) => {
@@ -48,19 +48,19 @@ const WatchlistButton = ({
     const checkItem = useCallback(async () => {
         try {
             const response = await fetch(
-                `/api/watchlist/check?external_id=${externalId}`
+                `/api/watchlist/check?movie_id=${movieId}`
             );
             const data = await response.json();
             setIsAdded(data.exists);
         } catch (error) {
             console.error('Failed to check item availability:', error);
         }
-    }, [externalId]);
+    }, [movieId]);
 
     const addItemToWatchlist = async () => {
         try {
             await axios.post('/api/watchlist/add', {
-                externalId,
+                movieId,
                 title,
                 description,
             });
@@ -80,7 +80,7 @@ const WatchlistButton = ({
     const removeItemFromWatchlist = async () => {
         try {
             await axios.post('/api/watchlist/delete', {
-                externalId,
+                movieId,
             });
             setIsAdded(false);
             addToast({

@@ -31,13 +31,10 @@ const login = async (formData: LoginFormProps) => {
     const { error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
-        return {
-            status: 'error',
-            message: error.message,
-        };
+        throw new Error(error.message);
     }
 
-    revalidatePath('/', 'layout');
+    revalidatePath('/');
     redirect('/dashboard');
 };
 
@@ -59,29 +56,21 @@ const signup = async (formData: SignupFormProps) => {
     const { error } = await supabase.auth.signUp(data);
 
     if (error) {
-        return {
-            status: 'error',
-            message: error.message,
-        };
+        throw new Error(error.message);
     }
 
-    revalidatePath('/', 'layout');
+    revalidatePath('/');
     return {
-        status: 'success',
         message: 'Please check your email to verify your account.',
     };
 };
 
 const signout = async () => {
     const supabase = await createClient();
-    // Check if a user's logged in
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-        await supabase.auth.signOut();
-    }
-    revalidatePath('/', 'layout');
+
+    await supabase.auth.signOut();
+
+    revalidatePath('/');
     redirect('/login');
 };
 
@@ -123,10 +112,7 @@ const fetchTrendingMedia = async (
                         media.genre_ids?.map(
                             (id: number) => genres[id] || 'Unknown'
                         ) ?? [],
-                    posterUrl:
-                        process.env.NODE_ENV === 'development'
-                            ? '/images/2149946322.jpg'
-                            : `${TMDB_IMAGES_URL}/w342${media.poster_path}`,
+                    posterUrl: `${TMDB_IMAGES_URL}/w342${media.poster_path}`,
                     href: `/${media.media_type}/${media.id}`,
                     releaseDate:
                         media.media_type === 'movie'

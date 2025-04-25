@@ -38,7 +38,7 @@ export type Database = {
                 Row: {
                     created_at: string | null;
                     description: string | null;
-                    external_id: string;
+                    movie_id: string;
                     id: string;
                     image_url: string | null;
                     list_id: string | null;
@@ -48,7 +48,7 @@ export type Database = {
                 Insert: {
                     created_at?: string | null;
                     description?: string | null;
-                    external_id: string;
+                    movie_id: string;
                     id?: string;
                     image_url?: string | null;
                     list_id?: string | null;
@@ -58,7 +58,7 @@ export type Database = {
                 Update: {
                     created_at?: string | null;
                     description?: string | null;
-                    external_id?: string;
+                    movie_id?: string;
                     id?: string;
                     image_url?: string | null;
                     list_id?: string | null;

@@ -36,7 +36,7 @@ const HeroDetail = (props: HeroDetailProps) => {
                 </h1>
                 <div className='w-full md:w-1/2 flex gap-4 justify-center md:justify-end items-center'>
                     <WatchlistButton
-                        externalId={id}
+                        movieId={id}
                         title={title}
                         description={description}
                     />

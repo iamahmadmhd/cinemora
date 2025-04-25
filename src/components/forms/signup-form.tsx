@@ -37,7 +37,6 @@ export function SignupForm() {
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors, isLoading },
     } = useForm({
         resolver: zodResolver(schema),

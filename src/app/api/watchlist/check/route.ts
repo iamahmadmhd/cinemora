@@ -4,36 +4,44 @@ import { createClient } from '@/utils/supabase/server';
 export async function GET(req: Request) {
     const supabase = await createClient();
     const { searchParams } = new URL(req.url);
-    const externalId = searchParams.get('external_id');
+    const movieId = searchParams.get('movie_id');
 
     const {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user || !externalId) {
-        return NextResponse.json({ exists: false });
+    if (!movieId) {
+        return NextResponse.json(
+            { message: 'Movie id is required.' },
+            { status: 401 }
+        );
     }
-
-    // Get user's watchlist
-    const { data: watchlist } = await supabase
-        .from('watchlists')
-        .select()
-        .eq('user_id', user.id)
-        .single();
-
-    const listId = watchlist?.id;
 
     // Check if item exists
-    const { data } = await supabase
-        .from('list_items')
-        .select()
-        .eq('list_id', listId)
-        .eq('external_id', externalId)
-        .maybeSingle();
+    const { data, error } = await supabase
+        .from('watchlists')
+        .select('id')
+        .eq('user_id', user?.id)
+        .eq('movie_id', movieId)
+        .single();
 
-    if (!data) {
-        return NextResponse.json({ exists: false });
+    if (error) {
+        return NextResponse.json(
+            { message: error.message },
+            { status: error.code as unknown as number }
+        );
     }
 
-    return NextResponse.json({ exists: true });
+    const listId = data?.id;
+    if (!listId) {
+        return NextResponse.json(
+            { message: 'Item does not exist in watchlist' },
+            { status: 404 }
+        );
+    }
+
+    return NextResponse.json(
+        { message: 'Item exists in watchlist' },
+        { status: 200 }
+    );
 }

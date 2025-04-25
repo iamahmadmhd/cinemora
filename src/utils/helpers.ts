@@ -15,7 +15,7 @@ const getGenres = (genres: { id: number; name: string }[]) => {
 const getDisplayCountryNames = (countryCodes: string[]) => {
     const countryNames: string[] = [];
     countryCodes?.forEach((countryCode) => {
-        const countryName = lookup.byInternet(countryCode)?.country;
+        const countryName = lookup.byIso(countryCode)?.country;
         if (countryName) {
             countryNames.push(countryName);
         }

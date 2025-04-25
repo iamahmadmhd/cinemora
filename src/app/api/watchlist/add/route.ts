@@ -8,45 +8,34 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const { externalId, title, description } = await req.json();
-    if (!externalId) {
+    const { movieId, title, description } = await req.json();
+
+    if (!movieId) {
         return NextResponse.json(
-            { error: 'Missing external id' },
+            { message: 'Missing external id' },
             { status: 400 }
         );
     }
 
-    const { data: watchlist } = await supabase
-        .from('watchlists')
-        .select()
-        .eq('user_id', user.id)
-        .single();
-
-    const listId = watchlist?.id;
-    if (!listId) {
-        return NextResponse.json(
-            { error: 'Watchlist not found' },
-            { status: 404 }
-        );
-    }
-
     // Insert item
-    const { error } = await supabase.from('list_items').insert([
+    const { error } = await supabase.from('watchlists').insert([
         {
             user_id: user.id,
-            list_id: listId,
-            external_id: externalId,
+            movie_id: movieId,
             title: title,
             description: description,
         },
     ]);
 
     if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json(
+            { message: error.message },
+            { status: error.code as unknown as number }
+        );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: 'success' }, { status: 200 });
 }

@@ -15,6 +15,8 @@ import {
 } from 'src/types/types';
 import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
+import { User } from '@supabase/supabase-js';
+import { Profile } from '@/providers/use-auth';
 
 const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL;
 const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
@@ -31,10 +33,8 @@ const login = async (formData: LoginFormProps) => {
     const { error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
-        return {
-            status: error.code,
-            message: error.message,
-        };
+        console.error('Error fetching profile:', error);
+        throw new Error(error.message);
     }
 
     revalidatePath('/');
@@ -62,10 +62,8 @@ const signup = async (formData: SignupFormProps) => {
     const { error } = await supabase.auth.signUp(data);
 
     if (error) {
-        return {
-            status: error.code,
-            message: error.message,
-        };
+        console.error('Error fetching profile:', error);
+        throw new Error(error.message);
     }
 
     revalidatePath('/');
@@ -82,6 +80,40 @@ const signout = async () => {
 
     revalidatePath('/');
     redirect('/login');
+};
+
+const fetchUser = async (): Promise<User> => {
+    const supabase = await createClient();
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser();
+
+    if (error) {
+        console.error('Error fetching user:', error);
+        throw new Error(error.message);
+    }
+    if (!user) {
+        console.error('No user found');
+        throw new Error('No user found');
+    }
+    return user;
+};
+
+const fetchProfile = async (): Promise<Profile> => {
+    const supabase = await createClient();
+    const user = await fetchUser();
+    const { data, error } = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', 'id' in user ? user.id : undefined)
+        .single();
+
+    if (error) {
+        console.error('Error fetching profile:', error);
+        throw new Error(error.message);
+    }
+    return data;
 };
 
 const fetchTrendingMedia = async (
@@ -229,6 +261,8 @@ export {
     login,
     signup,
     signout,
+    fetchUser,
+    fetchProfile,
     fetchTrendingMedia,
     fetchMovieById,
     fetchTVShowById,

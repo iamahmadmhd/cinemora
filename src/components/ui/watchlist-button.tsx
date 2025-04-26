@@ -1,49 +1,45 @@
 'use client';
 
 import { Button } from '@heroui/button';
-import { addToast } from '@heroui/react';
+import { addToast, type ToastProps } from '@heroui/toast';
 import { Tooltip } from '@heroui/tooltip';
 import axios from 'axios';
-import { ListPlus } from 'lucide-react';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { Bookmark } from 'lucide-react';
+import { useEffect, useState, useCallback, useMemo, use } from 'react';
 import { useAuth } from '@/providers/use-auth';
 
 type WatchlistButtonProps = {
     movieId: string;
     title: string;
     description: string;
-};
-
-type ToastOptions = {
-    variant?: 'flat' | 'solid' | 'bordered';
-    color?:
-        | 'primary'
-        | 'default'
-        | 'foreground'
-        | 'secondary'
-        | 'success'
-        | 'warning'
-        | 'danger'
-        | undefined;
-    timeout?: number;
+    posterUrl?: string;
+    releaseDate?: string;
+    genres?: string[];
+    voteAverage?: number;
 };
 
 const WatchlistButton = ({
     movieId,
     title,
     description,
+    posterUrl,
+    releaseDate,
+    genres,
+    voteAverage,
 }: WatchlistButtonProps) => {
     const [isAdded, setIsAdded] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const { isLoggedIn } = useAuth();
+    const { userPromise } = useAuth();
+    const isLoggedIn = !!use(userPromise);
 
-    const toastOptions: ToastOptions = useMemo(
-        () => ({
-            variant: 'flat',
-            timeout: 5000,
-        }),
-        []
-    );
+    const toastOptions: Pick<ToastProps, 'variant' | 'classNames' | 'timeout'> =
+        useMemo(
+            () => ({
+                variant: 'flat',
+                timeout: 5000,
+            }),
+            []
+        );
 
     const checkItem = useCallback(async () => {
         await fetch(`/api/watchlist/check?movie_id=${movieId}`)
@@ -65,13 +61,16 @@ const WatchlistButton = ({
                 movieId,
                 title,
                 description,
+                posterUrl,
+                releaseDate,
+                genres,
+                voteAverage,
             })
             .then((response) => {
                 if (response.status === 200) {
                     setIsAdded(true);
                     addToast({
                         title: 'Added to watchlist',
-                        icon: 'check',
                         ...toastOptions,
                     });
                 }
@@ -79,7 +78,6 @@ const WatchlistButton = ({
             .catch(() => {
                 addToast({
                     title: 'Failed to add item to watchlist',
-                    icon: 'x',
                 });
             });
     };
@@ -134,12 +132,15 @@ const WatchlistButton = ({
         >
             <Button
                 isIconOnly
-                variant={isAdded ? 'flat' : 'solid'}
+                variant={'light'}
                 color='primary'
                 isLoading={loading}
                 onPress={handleClick}
             >
-                <ListPlus size={18} />
+                <Bookmark
+                    size={20}
+                    fill={isAdded ? 'currentColor' : 'none'}
+                />
             </Button>
         </Tooltip>
     );

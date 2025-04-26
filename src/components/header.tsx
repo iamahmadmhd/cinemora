@@ -11,7 +11,7 @@ import {
 } from '@heroui/navbar';
 import { Link } from '@heroui/link';
 import NextLink from 'next/link';
-import { ComponentProps, ReactNode, useState } from 'react';
+import { ComponentProps, ReactNode, use, useState } from 'react';
 import { ThemeSwitcher } from '@/ui/theme-switcher';
 import { Button } from '@heroui/button';
 import { useAuth } from '../providers/use-auth';
@@ -37,7 +37,8 @@ const Header: React.FC<HeaderProps> = ({
     ...props
 }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { isLoggedIn } = useAuth();
+    const { userPromise } = useAuth();
+    const isLoggedIn = !!use(userPromise);
 
     const renderNavItems = (items: NavItem[], className: string) =>
         items.map((item, index) => (

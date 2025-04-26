@@ -82,36 +82,36 @@ const signout = async () => {
     redirect('/login');
 };
 
-const fetchUser = async (): Promise<User> => {
+const fetchUser = async () => {
     const supabase = await createClient();
     const {
         data: { user },
-        error,
     } = await supabase.auth.getUser();
 
-    if (error) {
-        console.error('Error fetching user:', error);
-        throw new Error(error.message);
-    }
     if (!user) {
-        console.error('No user found');
-        throw new Error('No user found');
+        return null;
     }
+
     return user;
 };
 
-const fetchProfile = async (): Promise<Profile> => {
+const fetchProfile = async () => {
     const supabase = await createClient();
-    const user = await fetchUser();
-    const { data, error } = await supabase
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        return null;
+    }
+    const { data } = await supabase
         .from('profiles')
         .select()
-        .eq('id', 'id' in user ? user.id : undefined)
+        .eq('id', user?.id)
         .single();
 
-    if (error) {
-        console.error('Error fetching profile:', error);
-        throw new Error(error.message);
+    if (!data) {
+        return null;
     }
     return data;
 };

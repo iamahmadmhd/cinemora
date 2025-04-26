@@ -7,17 +7,17 @@ export async function POST(req: Request) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
     const { movieId, title, description } = await req.json();
 
     if (!movieId) {
         return NextResponse.json(
-            { message: 'Missing external id' },
+            { message: 'Movie id is required.' },
             { status: 400 }
         );
+    }
+
+    if (!user) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     // Insert item
@@ -37,5 +37,8 @@ export async function POST(req: Request) {
         );
     }
 
-    return NextResponse.json({ message: 'success' }, { status: 200 });
+    return NextResponse.json(
+        { message: 'Item added successfully' },
+        { status: 200 }
+    );
 }

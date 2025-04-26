@@ -12,9 +12,9 @@ export async function POST(req: Request) {
     if (!movieId) {
         return NextResponse.json(
             {
-                message: 'Please provide an external id.',
+                message: 'Movie id is required.',
             },
-            { status: 400 }
+            { status: 401 }
         );
     }
 

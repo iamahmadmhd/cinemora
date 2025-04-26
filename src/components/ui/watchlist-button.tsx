@@ -58,41 +58,49 @@ const WatchlistButton = ({
     }, [movieId]);
 
     const addItemToWatchlist = async () => {
-        try {
-            await axios.post('/api/watchlist/add', {
+        await axios
+            .post('/api/watchlist/add', {
                 movieId,
                 title,
                 description,
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    setIsAdded(true);
+                    addToast({
+                        title: 'Added to watchlist',
+                        icon: 'check',
+                        ...toastOptions,
+                    });
+                }
+            })
+            .catch(() => {
+                addToast({
+                    title: 'Failed to add item to watchlist',
+                    icon: 'x',
+                });
             });
-            setIsAdded(true);
-            addToast({
-                title: 'Added to watchlist',
-                ...toastOptions,
-            });
-        } catch (error) {
-            console.error('Failed to add item to watchlist:', error);
-            addToast({
-                title: 'Failed to add item to watchlist',
-            });
-        }
     };
 
     const removeItemFromWatchlist = async () => {
-        try {
-            await axios.post('/api/watchlist/delete', {
+        await axios
+            .post('/api/watchlist/remove', {
                 movieId,
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    setIsAdded(false);
+                    addToast({
+                        title: 'Removed from watchlist',
+                        ...toastOptions,
+                    });
+                }
+            })
+            .catch(() => {
+                addToast({
+                    title: 'Failed to remove item from watchlist',
+                });
             });
-            setIsAdded(false);
-            addToast({
-                title: 'Removed from watchlist',
-                ...toastOptions,
-            });
-        } catch (error) {
-            console.error('Failed to remove item from watchlist:', error);
-            addToast({
-                title: 'Failed to remove item from watchlist',
-            });
-        }
     };
 
     const handleClick = async () => {

@@ -6,15 +6,19 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const movieId = searchParams.get('movie_id');
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-
     if (!movieId) {
         return NextResponse.json(
             { message: 'Movie id is required.' },
             { status: 401 }
         );
+    }
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     // Check if item exists
@@ -33,10 +37,11 @@ export async function GET(req: Request) {
     }
 
     const listId = data?.id;
+
     if (!listId) {
         return NextResponse.json(
             { message: 'Item does not exist in watchlist' },
-            { status: 404 }
+            { status: 200 }
         );
     }
 

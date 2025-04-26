@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { signup } from '@/app/actions';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // Define the schema for form validation using Zod
 const schema = z
@@ -37,6 +37,7 @@ export function SignupForm() {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors, isLoading },
     } = useForm({
         resolver: zodResolver(schema),
@@ -48,23 +49,22 @@ export function SignupForm() {
     });
 
     const onSubmit = async (data: SignupFormProps) => {
-        try {
-            const { message } = await signup(data);
-            setResponse({
-                visible: true,
-                error: false,
-                message: message,
-            });
-        } catch (error) {
+        const { status, message } = await signup(data);
+        if (status !== 200) {
             setResponse({
                 visible: true,
                 error: true,
-                message:
-                    error instanceof Error
-                        ? error.message
-                        : 'An unknown error occurred',
+                message: message,
+            });
+        } else {
+            setResponse({
+                visible: true,
+                error: false,
+                message: 'Signup successful',
             });
         }
+        // Reset the form after submission
+        reset();
     };
 
     return (

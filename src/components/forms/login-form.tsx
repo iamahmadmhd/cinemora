@@ -23,6 +23,7 @@ export function LoginForm() {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors, isLoading },
     } = useForm({
         resolver: zodResolver(schema),
@@ -34,23 +35,22 @@ export function LoginForm() {
     });
 
     const onSubmit = async (data: LoginFormProps) => {
-        try {
-            const { message } = await login(data);
-            setResponse({
-                visible: true,
-                error: false,
-                message: message,
-            });
-        } catch (error) {
+        const { status, message } = await login(data);
+        if (status !== 200) {
             setResponse({
                 visible: true,
                 error: true,
-                message:
-                    error instanceof Error
-                        ? error.message
-                        : 'An unknown error occurred',
+                message: message,
+            });
+        } else {
+            setResponse({
+                visible: true,
+                error: false,
+                message: 'Login successful',
             });
         }
+        // Reset the form after submission
+        reset();
     };
 
     return (

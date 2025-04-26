@@ -30,10 +30,7 @@ export async function GET(req: Request) {
         .single();
 
     if (error) {
-        return NextResponse.json(
-            { message: error.message },
-            { status: error.code as unknown as number }
-        );
+        return NextResponse.json({ message: error.message }, { status: 500 });
     }
 
     const listId = data?.id;
@@ -41,7 +38,7 @@ export async function GET(req: Request) {
     if (!listId) {
         return NextResponse.json(
             { message: 'Item does not exist in watchlist' },
-            { status: 200 }
+            { status: 404 }
         );
     }
 

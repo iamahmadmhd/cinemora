@@ -46,15 +46,17 @@ const WatchlistButton = ({
     );
 
     const checkItem = useCallback(async () => {
-        try {
-            const response = await fetch(
-                `/api/watchlist/check?movie_id=${movieId}`
-            );
-            const data = await response.json();
-            setIsAdded(data.exists);
-        } catch (error) {
-            console.error('Failed to check item availability:', error);
-        }
+        await fetch(`/api/watchlist/check?movie_id=${movieId}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    setIsAdded(true);
+                } else if (response.status === 404) {
+                    setIsAdded(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Failed to check item availability:', error);
+            });
     }, [movieId]);
 
     const addItemToWatchlist = async () => {

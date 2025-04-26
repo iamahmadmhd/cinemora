@@ -31,11 +31,17 @@ const login = async (formData: LoginFormProps) => {
     const { error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
-        throw new Error(error.message);
+        return {
+            status: error.code,
+            message: error.message,
+        };
     }
 
     revalidatePath('/');
-    redirect('/dashboard');
+    return {
+        status: 200,
+        message: 'Login successful',
+    };
 };
 
 const signup = async (formData: SignupFormProps) => {
@@ -56,11 +62,15 @@ const signup = async (formData: SignupFormProps) => {
     const { error } = await supabase.auth.signUp(data);
 
     if (error) {
-        throw new Error(error.message);
+        return {
+            status: error.code,
+            message: error.message,
+        };
     }
 
     revalidatePath('/');
     return {
+        status: 200,
         message: 'Please check your email to verify your account.',
     };
 };

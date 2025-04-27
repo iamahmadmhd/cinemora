@@ -99,28 +99,16 @@ const Header: React.FC<HeaderProps> = ({
                         variant='flat'
                     >
                         <DropdownItem
-                            key='email'
+                            key='name'
                             className='data-[hover=true]:bg-transparent cursor-auto'
                         >
-                            {profile?.email}
+                            {profile?.firstname} {profile?.lastname}
                         </DropdownItem>
                         <DropdownItem
                             key='watchlist'
                             href='/watchlist'
                         >
                             Watchlist
-                        </DropdownItem>
-                        <DropdownItem
-                            key='profile'
-                            href='/profile'
-                        >
-                            Profile
-                        </DropdownItem>
-                        <DropdownItem
-                            key='settings'
-                            href='/settings'
-                        >
-                            Settings
                         </DropdownItem>
                         <DropdownItem
                             key='logout'

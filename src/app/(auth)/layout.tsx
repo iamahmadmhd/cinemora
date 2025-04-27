@@ -13,7 +13,7 @@ export default async function Layout({
 
     const { data } = await supabase.auth.getUser();
     if (data?.user) {
-        redirect('/dashboard');
+        redirect('/watchlist');
     }
     return (
         <>

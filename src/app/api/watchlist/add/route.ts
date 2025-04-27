@@ -7,7 +7,15 @@ export async function POST(req: Request) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    const { movieId, title, description } = await req.json();
+    const {
+        movieId,
+        title,
+        description,
+        posterUrl,
+        releaseDate,
+        genres,
+        voteAverage,
+    } = await req.json();
 
     if (!movieId) {
         return NextResponse.json(
@@ -27,6 +35,10 @@ export async function POST(req: Request) {
             movie_id: movieId,
             title: title,
             description: description,
+            poster_url: posterUrl,
+            release_date: releaseDate,
+            genres: genres,
+            vote_average: voteAverage,
         },
     ]);
 

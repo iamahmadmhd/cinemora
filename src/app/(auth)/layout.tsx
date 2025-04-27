@@ -28,6 +28,7 @@ export default async function Layout({
                         Cinemora
                     </Link>
                 }
+                showButton={false}
             />
             <main className='max-w-[1200px] mx-auto px-6 py-20'>
                 {children}

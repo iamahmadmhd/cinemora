@@ -11,10 +11,22 @@ interface HeroDetailProps extends CardProps {
     title: string;
     description: string;
     backdropUrl: string;
+    realeaseDate?: string;
+    genres?: string[];
+    voteAverage?: number;
 }
 const HeroDetail = (props: HeroDetailProps) => {
-    const { id, title, description, backdropUrl, className, ...restProps } =
-        props;
+    const {
+        id,
+        title,
+        description,
+        backdropUrl,
+        realeaseDate,
+        genres,
+        voteAverage,
+        className,
+        ...restProps
+    } = props;
     return (
         <Card
             isFooterBlurred
@@ -39,6 +51,10 @@ const HeroDetail = (props: HeroDetailProps) => {
                         movieId={id}
                         title={title}
                         description={description}
+                        posterUrl={backdropUrl}
+                        releaseDate={realeaseDate}
+                        genres={genres}
+                        voteAverage={voteAverage}
                     />
                 </div>
             </CardFooter>

@@ -32,6 +32,9 @@ export default async function MoviePage({
                 title={title}
                 description={overview}
                 backdropUrl={backdropUrl ?? ''}
+                realeaseDate={releaseDate}
+                genres={genres}
+                voteAverage={voteAverage}
             />
             <MediaDetail
                 mediaType={mediaType}

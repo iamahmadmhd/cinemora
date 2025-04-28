@@ -3,7 +3,7 @@ import '@fontsource-variable/open-sans';
 import '@/styles/globals.css';
 import { Providers } from '../providers/providers';
 import { AuthProvider } from 'src/providers/use-auth';
-import { createClient } from '@/utils/supabase/server';
+import { fetchProfile, fetchUser } from '@/app/actions';
 
 export const metadata: Metadata = {
     title: 'Cinemora',
@@ -15,17 +15,24 @@ export default async function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const userPromise = fetchUser();
+    const profilePromise = fetchProfile();
     return (
         <html lang='en'>
             <body className='bg-[url("/page-background.svg")] bg-fixed bg-cover min-h-lvh'>
-                <Providers
-                    themeProps={{
-                        attribute: 'class',
-                        defaultTheme: 'system',
-                    }}
+                <AuthProvider
+                    userPromise={userPromise}
+                    profilePromise={profilePromise}
                 >
-                    {children}
-                </Providers>
+                    <Providers
+                        themeProps={{
+                            attribute: 'class',
+                            defaultTheme: 'system',
+                        }}
+                    >
+                        {children}
+                    </Providers>
+                </AuthProvider>
             </body>
         </html>
     );

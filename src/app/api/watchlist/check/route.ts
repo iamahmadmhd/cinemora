@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { getErrorStatusCode } from '@/utils/helpers';
 
 export async function GET(req: Request) {
     const supabase = await createClient();
     const { searchParams } = new URL(req.url);
-    const movieId = searchParams.get('movie_id');
+    const mediaId = searchParams.get('media_id');
 
-    if (!movieId) {
+    if (!mediaId) {
         return NextResponse.json(
             { message: 'Movie id is required.' },
             { status: 401 }
@@ -26,11 +27,14 @@ export async function GET(req: Request) {
         .from('watchlists')
         .select('id')
         .eq('user_id', user?.id)
-        .eq('movie_id', movieId)
+        .eq('media_id', mediaId)
         .single();
 
     if (error) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+        return NextResponse.json(
+            { message: error.message },
+            { status: getErrorStatusCode(error as unknown as string) }
+        );
     }
 
     const listId = data?.id;

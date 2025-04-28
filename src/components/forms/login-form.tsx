@@ -35,20 +35,21 @@ export function LoginForm() {
     });
 
     const onSubmit = async (data: LoginFormProps) => {
-        const { status, message } = await login(data);
-        if (status !== 200) {
-            setResponse({
-                visible: true,
-                error: true,
-                message: message,
-            });
-        } else {
-            setResponse({
-                visible: true,
-                error: false,
-                message: 'Login successful',
-            });
-        }
+        await login(data).then((response) => {
+            if (response && response.status !== 200) {
+                setResponse({
+                    visible: true,
+                    error: true,
+                    message: response.message,
+                });
+            } else {
+                setResponse({
+                    visible: true,
+                    error: false,
+                    message: 'Login successful',
+                });
+            }
+        });
         // Reset the form after submission
         reset();
     };

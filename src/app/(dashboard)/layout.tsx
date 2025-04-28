@@ -28,9 +28,7 @@ export default function Layout({
                 }
                 showButton
             />
-            <main className='max-w-[1200px] mx-auto px-6 py-20'>
-                {children}
-            </main>
+            <main className='max-w-[1200px] mx-auto p-6'>{children}</main>
         </>
     );
 }

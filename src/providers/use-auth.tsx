@@ -1,41 +1,38 @@
-// components/AuthProvider.tsx
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { Database } from '@/types/supabase';
+
+export type Profile = Database['public']['Tables']['profiles']['Row'] | null;
 
 type AuthContextType = {
-    user: User | null;
-    isLoggedIn: boolean;
+    userPromise: Promise<User | null>;
+    profilePromise?: Promise<Profile | null>;
 };
 
-const AuthContext = createContext<AuthContextType>({
-    user: null,
-    isLoggedIn: false,
-});
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({
     children,
-    user,
+    userPromise,
+    profilePromise,
 }: {
     children: React.ReactNode;
-    user: User | null;
+    userPromise: Promise<User | null>;
+    profilePromise?: Promise<Profile | null>;
 }) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        if (user) {
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, [user]);
-
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn: isLoggedIn }}>
+        <AuthContext.Provider value={{ userPromise, profilePromise }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (context === null) {
+        throw new Error('useAuth must be used within a AuthProvider');
+    }
+    return context;
+};

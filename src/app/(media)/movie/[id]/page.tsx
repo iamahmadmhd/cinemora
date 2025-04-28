@@ -28,10 +28,15 @@ export default async function MoviePage({
     return (
         <div className='grid gap-y-20'>
             <HeroDetail
-                id={movieId}
+                id={movieId as unknown as number}
+                mediaType={mediaType}
                 title={title}
-                description={overview}
-                backdropUrl={backdropUrl ?? ''}
+                posterUrl={posterUrl}
+                backdropUrl={backdropUrl}
+                overview={overview}
+                voteAverage={voteAverage}
+                releaseDate={releaseDate}
+                genres={genres}
             />
             <MediaDetail
                 mediaType={mediaType}

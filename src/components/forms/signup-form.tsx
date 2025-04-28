@@ -49,20 +49,21 @@ export function SignupForm() {
     });
 
     const onSubmit = async (data: SignupFormProps) => {
-        const { status, message } = await signup(data);
-        if (status !== 200) {
-            setResponse({
-                visible: true,
-                error: true,
-                message: message,
-            });
-        } else {
-            setResponse({
-                visible: true,
-                error: false,
-                message: 'Signup successful',
-            });
-        }
+        await signup(data).then((response) => {
+            if (response && response.status !== 200) {
+                setResponse({
+                    visible: true,
+                    error: true,
+                    message: response.message,
+                });
+            } else {
+                setResponse({
+                    visible: true,
+                    error: false,
+                    message: 'Signup successful',
+                });
+            }
+        });
         // Reset the form after submission
         reset();
     };

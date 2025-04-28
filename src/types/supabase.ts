@@ -34,47 +34,6 @@ export type Database = {
     };
     public: {
         Tables: {
-            list_items: {
-                Row: {
-                    created_at: string | null;
-                    description: string | null;
-                    movie_id: string;
-                    id: string;
-                    image_url: string | null;
-                    list_id: string | null;
-                    metadata: Json | null;
-                    title: string;
-                };
-                Insert: {
-                    created_at?: string | null;
-                    description?: string | null;
-                    movie_id: string;
-                    id?: string;
-                    image_url?: string | null;
-                    list_id?: string | null;
-                    metadata?: Json | null;
-                    title: string;
-                };
-                Update: {
-                    created_at?: string | null;
-                    description?: string | null;
-                    movie_id?: string;
-                    id?: string;
-                    image_url?: string | null;
-                    list_id?: string | null;
-                    metadata?: Json | null;
-                    title?: string;
-                };
-                Relationships: [
-                    {
-                        foreignKeyName: 'list_items_list_id_fkey';
-                        columns: ['list_id'];
-                        isOneToOne: false;
-                        referencedRelation: 'watchlists';
-                        referencedColumns: ['id'];
-                    },
-                ];
-            };
             profiles: {
                 Row: {
                     avatar: string | null;
@@ -84,8 +43,6 @@ export type Database = {
                     firstname: string;
                     id: string;
                     lastname: string;
-                    user_id: string;
-                    watchlist: string | null;
                 };
                 Insert: {
                     avatar?: string | null;
@@ -95,8 +52,6 @@ export type Database = {
                     firstname: string;
                     id?: string;
                     lastname: string;
-                    user_id: string;
-                    watchlist?: string | null;
                 };
                 Update: {
                     avatar?: string | null;
@@ -106,43 +61,58 @@ export type Database = {
                     firstname?: string;
                     id?: string;
                     lastname?: string;
-                    user_id?: string;
-                    watchlist?: string | null;
                 };
-                Relationships: [
-                    {
-                        foreignKeyName: 'profiles_watchlist_fkey';
-                        columns: ['watchlist'];
-                        isOneToOne: false;
-                        referencedRelation: 'watchlists';
-                        referencedColumns: ['id'];
-                    },
-                ];
+                Relationships: [];
             };
             watchlists: {
                 Row: {
-                    allowed_users: string[] | null;
-                    created_at: string | null;
-                    id: string;
-                    is_public: boolean | null;
-                    items: string[] | null;
-                    user_id: string | null;
+                    added_at?: string | null;
+                    genres: string[] | null;
+                    href: string | null;
+                    id?: string;
+                    media_id: string;
+                    media_type: Database['public']['Enums']['mediatype'] | null;
+                    overview: string | null;
+                    poster_url: string | null;
+                    release_date: string | null;
+                    status: Database['public']['Enums']['status'] | null;
+                    title: string;
+                    user_id: string;
+                    vote_average: number | null;
                 };
                 Insert: {
-                    allowed_users?: string[] | null;
-                    created_at?: string | null;
+                    added_at?: string | null;
+                    genres?: string[] | null;
+                    href?: string | null;
                     id?: string;
-                    is_public?: boolean | null;
-                    items?: string[] | null;
-                    user_id?: string | null;
+                    media_id: string;
+                    media_type?:
+                        | Database['public']['Enums']['mediatype']
+                        | null;
+                    overview?: string | null;
+                    poster_url?: string | null;
+                    release_date?: string | null;
+                    status?: Database['public']['Enums']['status'] | null;
+                    title: string;
+                    user_id: string;
+                    vote_average?: number | null;
                 };
                 Update: {
-                    allowed_users?: string[] | null;
-                    created_at?: string | null;
+                    added_at?: string | null;
+                    genres?: string[] | null;
+                    href?: string | null;
                     id?: string;
-                    is_public?: boolean | null;
-                    items?: string[] | null;
-                    user_id?: string | null;
+                    media_id?: string;
+                    media_type?:
+                        | Database['public']['Enums']['mediatype']
+                        | null;
+                    overview?: string | null;
+                    poster_url?: string | null;
+                    release_date?: string | null;
+                    status?: Database['public']['Enums']['status'] | null;
+                    title?: string;
+                    user_id?: string;
+                    vote_average?: number | null;
                 };
                 Relationships: [
                     {
@@ -150,7 +120,7 @@ export type Database = {
                         columns: ['user_id'];
                         isOneToOne: false;
                         referencedRelation: 'profiles';
-                        referencedColumns: ['user_id'];
+                        referencedColumns: ['id'];
                     },
                 ];
             };
@@ -162,7 +132,8 @@ export type Database = {
             [_ in never]: never;
         };
         Enums: {
-            [_ in never]: never;
+            mediatype: 'movie' | 'tv';
+            status: 'watched' | 'not watched';
         };
         CompositeTypes: {
             [_ in never]: never;
@@ -280,6 +251,9 @@ export const Constants = {
         Enums: {},
     },
     public: {
-        Enums: {},
+        Enums: {
+            mediatype: ['movie', 'tv'],
+            status: ['watched', 'not watched'],
+        },
     },
 } as const;

@@ -15,80 +15,113 @@ import {
 } from 'src/types/types';
 import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
+import { User } from '@supabase/supabase-js';
+import { Profile } from '@/providers/use-auth';
 
-const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL;
-const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
-const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL;
+const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL!;
+const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN!;
+const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL!;
+
+const handleSupabaseError = (error: unknown, action: string): never => {
+    console.error(`Error during ${action}:`, error);
+    throw new Error(String(error) || `Failed to ${action}`);
+};
 
 const login = async (formData: LoginFormProps) => {
     const supabase = await createClient();
 
-    const data = {
-        email: formData.email,
-        password: formData.password,
-    };
+    try {
+        const { error } = await supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password,
+        });
 
-    const { error } = await supabase.auth.signInWithPassword(data);
+        if (error) handleSupabaseError(error, 'login');
 
-    if (error) {
-        return {
-            status: error.code,
-            message: error.message,
-        };
+        revalidatePath('/');
+        return { status: 200, message: 'Login successful' };
+    } catch (error) {
+        handleSupabaseError(error, 'login');
     }
-
-    revalidatePath('/');
-    return {
-        status: 200,
-        message: 'Login successful',
-    };
 };
 
 const signup = async (formData: SignupFormProps) => {
     const supabase = await createClient();
 
-    const data = {
-        email: formData.email,
-        password: formData.password,
-        options: {
-            data: {
-                firstname: formData.firstname,
-                lastname: formData.lastname,
+    try {
+        const { error } = await supabase.auth.signUp({
+            email: formData.email,
+            password: formData.password,
+            options: {
+                data: {
+                    firstname: formData.firstname,
+                    lastname: formData.lastname,
+                },
+                emailRedirectTo: '/login',
             },
-            emailRedirectTo: '/login',
-        },
-    };
+        });
 
-    const { error } = await supabase.auth.signUp(data);
+        if (error) handleSupabaseError(error, 'signup');
 
-    if (error) {
+        revalidatePath('/');
         return {
-            status: error.code,
-            message: error.message,
+            status: 200,
+            message: 'Please check your email to verify your account.',
         };
+    } catch (error) {
+        handleSupabaseError(error, 'signup');
     }
-
-    revalidatePath('/');
-    return {
-        status: 200,
-        message: 'Please check your email to verify your account.',
-    };
 };
 
 const signout = async () => {
     const supabase = await createClient();
-
-    await supabase.auth.signOut();
-
+    const { error } = await supabase.auth.signOut();
+    if (error) handleSupabaseError(error, 'signout');
     revalidatePath('/');
     redirect('/login');
+};
+
+const fetchUser = async (): Promise<User | null> => {
+    const supabase = await createClient();
+
+    try {
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+        return user || null;
+    } catch (error) {
+        handleSupabaseError(error, 'fetch user');
+        return null;
+    }
+};
+
+const fetchProfile = async (): Promise<Profile | null> => {
+    const supabase = await createClient();
+
+    try {
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return null;
+
+        const { data } = await supabase
+            .from('profiles')
+            .select()
+            .eq('id', user.id)
+            .single();
+
+        return data || null;
+    } catch (error) {
+        handleSupabaseError(error, 'fetch profile');
+    }
+
+    return null;
 };
 
 const fetchTrendingMedia = async (
     mediaType: MediaTypes
 ): Promise<MediaBaseInterface[]> => {
     const genreUrl = `${TMDB_API_URL}/genre/movie/list`;
-    console.log({ mediaType });
     const mediaUrl = `${TMDB_API_URL}/trending/${mediaType}/week`;
     const options = {
         headers: {
@@ -229,6 +262,8 @@ export {
     login,
     signup,
     signout,
+    fetchUser,
+    fetchProfile,
     fetchTrendingMedia,
     fetchMovieById,
     fetchTVShowById,

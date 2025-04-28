@@ -23,9 +23,9 @@ export function ThemeSwitcher() {
             }}
             variant='light'
             color='secondary'
-            size='sm'
+            radius='full'
         >
-            {theme === 'dark' ? <Moon size='1rem' /> : <Sun size='1rem' />}
+            {theme === 'dark' ? <Moon /> : <Sun />}
         </Button>
     );
 }

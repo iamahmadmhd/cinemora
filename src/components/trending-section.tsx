@@ -78,7 +78,6 @@ const TrendingSection = ({ className }: TrendingSectionProps) => {
                 fetchFunction={() => fetchTrendingMedia(mediaType)}
                 className='mb-8'
                 headline={content[mediaType].headline}
-                link={content[mediaType].link}
             />
         </section>
     );

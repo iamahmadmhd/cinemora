@@ -20,7 +20,7 @@ interface MediaSliderProps {
 
 const MediaSlider: React.FC<MediaSliderProps> = ({
     headline,
-    link = '/',
+    link,
     sliderOptions,
     fetchKey,
     fetchFunction,
@@ -41,14 +41,16 @@ const MediaSlider: React.FC<MediaSliderProps> = ({
             {headline && (
                 <div className='flex justify-between items-center'>
                     <h2 className='text-2xl font-bold'>{headline}</h2>
-                    <Button
-                        as={NextLink}
-                        href={link}
-                        variant='flat'
-                        color='primary'
-                    >
-                        Show All
-                    </Button>
+                    {link && (
+                        <Button
+                            as={NextLink}
+                            href={link}
+                            variant='flat'
+                            color='primary'
+                        >
+                            Show All
+                        </Button>
+                    )}
                 </div>
             )}
             <Carousel

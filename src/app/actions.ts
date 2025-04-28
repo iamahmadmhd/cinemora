@@ -258,6 +258,12 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     }
 };
 
+const fetchMovies = async () =>
+    (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/movie`)).data;
+
+const fetchTVShows = async () =>
+    (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tv`)).data;
+
 export {
     login,
     signup,
@@ -267,4 +273,6 @@ export {
     fetchTrendingMedia,
     fetchMovieById,
     fetchTVShowById,
+    fetchMovies,
+    fetchTVShows,
 };

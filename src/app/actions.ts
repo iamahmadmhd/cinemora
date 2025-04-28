@@ -122,7 +122,6 @@ const fetchTrendingMedia = async (
     mediaType: MediaTypes
 ): Promise<MediaBaseInterface[]> => {
     const genreUrl = `${TMDB_API_URL}/genre/movie/list`;
-    console.log({ mediaType });
     const mediaUrl = `${TMDB_API_URL}/trending/${mediaType}/week`;
     const options = {
         headers: {

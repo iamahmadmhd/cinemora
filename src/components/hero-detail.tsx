@@ -1,41 +1,36 @@
 'use client';
 
 import { Image } from '@heroui/image';
-import { Card, CardFooter, CardProps } from '@heroui/card';
-import NextImage from 'next/image';
+import { Card, CardFooter } from '@heroui/card';
 import { cn } from '@/utils/classname';
 import { WatchlistButton } from './ui/watchlist-button';
+import { WatchlistTableItem } from './watchlist-table';
 
-interface HeroDetailProps extends CardProps {
-    id: string;
-    title: string;
-    description: string;
-    backdropUrl: string;
-    realeaseDate?: string;
-    genres?: string[];
-    voteAverage?: number;
-}
+type HeroDetailProps = Omit<WatchlistTableItem, 'id'> & {
+    id: number;
+    className?: string;
+};
+
 const HeroDetail = (props: HeroDetailProps) => {
     const {
         id,
         title,
-        description,
+        overview,
+        posterUrl,
         backdropUrl,
-        realeaseDate,
+        mediaType,
+        releaseDate,
         genres,
         voteAverage,
         className,
-        ...restProps
     } = props;
     return (
         <Card
             isFooterBlurred
             className={cn('border-none', className)}
             radius='lg'
-            {...restProps}
         >
             <Image
-                as={NextImage}
                 src={backdropUrl}
                 alt={title}
                 width={1200}
@@ -48,11 +43,13 @@ const HeroDetail = (props: HeroDetailProps) => {
                 </h1>
                 <div className='w-full md:w-1/2 flex gap-4 justify-center md:justify-end items-center'>
                     <WatchlistButton
-                        movieId={id}
+                        id={id}
                         title={title}
-                        description={description}
-                        posterUrl={backdropUrl}
-                        releaseDate={realeaseDate}
+                        overview={overview}
+                        mediaType={mediaType}
+                        backdropUrl={backdropUrl}
+                        posterUrl={posterUrl}
+                        releaseDate={releaseDate}
                         genres={genres}
                         voteAverage={voteAverage}
                     />

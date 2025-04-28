@@ -7,26 +7,20 @@ import axios from 'axios';
 import { Bookmark } from 'lucide-react';
 import { useEffect, useState, useCallback, useMemo, use } from 'react';
 import { useAuth } from '@/providers/use-auth';
-
-type WatchlistButtonProps = {
-    movieId: string;
-    title: string;
-    description: string;
-    posterUrl?: string;
-    releaseDate?: string;
-    genres?: string[];
-    voteAverage?: number;
-};
+import { WatchlistTableItem } from '../watchlist-table';
 
 const WatchlistButton = ({
-    movieId,
+    id,
     title,
-    description,
+    overview,
     posterUrl,
+    backdropUrl,
+    href,
+    mediaType,
     releaseDate,
     genres,
     voteAverage,
-}: WatchlistButtonProps) => {
+}: WatchlistTableItem) => {
     const [isAdded, setIsAdded] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const { userPromise } = useAuth();
@@ -42,7 +36,7 @@ const WatchlistButton = ({
         );
 
     const checkItem = useCallback(async () => {
-        await fetch(`/api/watchlist/check?movie_id=${movieId}`)
+        await fetch(`/api/watchlist/check?media_id=${id}`)
             .then((response) => {
                 if (response.status === 200) {
                     setIsAdded(true);
@@ -53,16 +47,19 @@ const WatchlistButton = ({
             .catch((error) => {
                 console.error('Failed to check item availability:', error);
             });
-    }, [movieId]);
+    }, [id]);
 
     const addItemToWatchlist = async () => {
         await axios
             .post('/api/watchlist/add', {
-                movieId,
+                id,
                 title,
-                description,
+                overview,
                 posterUrl,
+                backdropUrl,
+                href,
                 releaseDate,
+                mediaType,
                 genres,
                 voteAverage,
             })
@@ -75,7 +72,8 @@ const WatchlistButton = ({
                     });
                 }
             })
-            .catch(() => {
+            .catch((error) => {
+                console.error('Failed to add item to watchlist:', error);
                 addToast({
                     title: 'Failed to add item to watchlist',
                 });
@@ -85,7 +83,7 @@ const WatchlistButton = ({
     const removeItemFromWatchlist = async () => {
         await axios
             .post('/api/watchlist/remove', {
-                movieId,
+                id,
             })
             .then((response) => {
                 if (response.status === 200) {
@@ -147,4 +145,3 @@ const WatchlistButton = ({
 };
 
 export { WatchlistButton };
-export type { WatchlistButtonProps };

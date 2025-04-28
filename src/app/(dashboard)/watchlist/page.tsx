@@ -1,30 +1,32 @@
-export default function WatchlistPage() {
+import { fetchUser } from '@/app/actions';
+import { WatchlistTable } from '@/components/watchlist-table';
+import { createClient } from '@/utils/supabase/server';
+
+export default async function WatchlistPage() {
+    const supabase = await createClient();
+    const user = await fetchUser();
+    const { data } = await supabase
+        .from('watchlists')
+        .select()
+        .eq('user_id', user?.id);
+
+    const watchlist = (data ?? []).map((item) => ({
+        id: item.media_id,
+        title: item.title,
+        overview: item.overview,
+        releaseDate: item.release_date,
+        genres: item.genres,
+        mediaType: item.media_type ?? '',
+        voteAverage: item.vote_average,
+        posterUrl: item.poster_url,
+        status: item.status ?? '',
+        href: item.href ?? '',
+    }));
+
     return (
         <div className='flex flex-col gap-4'>
             <h1 className='text-2xl font-bold'>Watchlist</h1>
-            <p className='text-gray-500'>
-                This is your watchlist. You can add or remove items from here.
-            </p>
-            <div className='flex flex-col gap-2'>
-                <div className='flex items-center justify-between p-4 bg-white shadow-md rounded-lg'>
-                    <div className='flex items-center gap-4'>
-                        <img
-                            src='/images/stock.png'
-                            alt='Stock'
-                            className='w-16 h-16 rounded-lg'
-                        />
-                        <div>
-                            <h2 className='text-xl font-semibold'>
-                                Stock Name
-                            </h2>
-                            <p className='text-gray-500'>Stock Symbol</p>
-                        </div>
-                    </div>
-                    <button className='px-4 py-2 text-white bg-blue-500 rounded-lg'>
-                        Remove
-                    </button>
-                </div>
-            </div>
+            <WatchlistTable items={watchlist} />
         </div>
     );
 }

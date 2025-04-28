@@ -7,7 +7,7 @@ import { Moon, Sun } from 'lucide-react';
 
 export function ThemeSwitcher() {
     const [mounted, setMounted] = useState(false);
-    const { theme, setTheme } = useTheme();
+    const { resolvedTheme, setTheme } = useTheme();
 
     useEffect(() => {
         setMounted(true);
@@ -19,13 +19,13 @@ export function ThemeSwitcher() {
         <Button
             isIconOnly
             onPress={() => {
-                setTheme(theme === 'dark' ? 'light' : 'dark');
+                setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
             }}
             variant='light'
             color='secondary'
             radius='full'
         >
-            {theme === 'dark' ? <Moon /> : <Sun />}
+            {resolvedTheme === 'dark' ? <Moon /> : <Sun />}
         </Button>
     );
 }

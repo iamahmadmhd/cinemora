@@ -42,7 +42,13 @@ export async function GET(request: NextRequest) {
                 popularity: show.popularity,
                 tagline: show.tagline,
             }));
-            return NextResponse.json(shows, {
+            const response = {
+                page: data.page,
+                results: shows,
+                totalPages: data.total_pages,
+                totalResults: data.total_results,
+            };
+            return NextResponse.json(response, {
                 status: 200,
             });
         } else {

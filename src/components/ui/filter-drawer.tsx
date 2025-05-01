@@ -231,13 +231,14 @@ const FilterDrawer = ({
                     <DrawerFooter className='w-full'>
                         <Button
                             color='danger'
-                            variant='flat'
+                            variant='light'
                             type='reset'
                         >
                             Clear Filters
                         </Button>
                         <Button
                             color='primary'
+                            variant='light'
                             type='submit'
                         >
                             Apply Filters

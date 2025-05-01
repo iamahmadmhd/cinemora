@@ -27,11 +27,18 @@ const filterSchema = z.object({
 
 export type FilterFormValues = z.infer<typeof filterSchema>;
 
+interface MediaResponse {
+    page: number;
+    results: MediaBaseInterface[];
+    totalPages: number;
+    totalResults: number;
+}
+
 interface MediaGridProps {
     headline?: string;
     mediaType: string;
     fetchKey: string;
-    fetchFunction: (searchParams?: Record<string, string>) => Promise<MediaBaseInterface[]>;
+    fetchFunction: (searchParams?: Record<string, string>) => Promise<MediaResponse>;
     className?: string;
 }
 
@@ -61,13 +68,13 @@ const MediaListingSection: React.FC<MediaGridProps> = ({
         isLoading: genresIsLoading,
     } = useSWR<GenreType[]>('genres', () => fetchGenres(mediaType));
 
-    const { data, error, isLoading } = useSWR<MediaBaseInterface[]>([fetchKey, searchParams], () =>
+    const { data, error, isLoading } = useSWR<MediaResponse>([fetchKey, searchParams], () =>
         fetchFunction(searchParams)
     );
 
     if (error || genresError) return <p className='text-red-500'>Error: {error.message}</p>;
 
-    if (!isLoading && !genresIsLoading && !data && !genres)
+    if ((!isLoading && !data) || (!genresIsLoading && !genres))
         return <p className='text-red-500'>No data found</p>;
 
     return (
@@ -86,7 +93,7 @@ const MediaListingSection: React.FC<MediaGridProps> = ({
                         <FilterDrawer
                             isOpen={FilterDrawerIsOpen}
                             onOpenChange={onFilterDrawerOpenChange}
-                            genres={genres || []}
+                            genres={genres ?? []}
                             setSearchParams={setSearchParams}
                         />
                     </FormProvider>
@@ -94,7 +101,12 @@ const MediaListingSection: React.FC<MediaGridProps> = ({
             </div>
             <MediaGrid
                 isLoading={isLoading}
-                data={data || []}
+                data={data?.results ?? []}
+                pagination={{
+                    total: data?.totalPages ?? 0,
+                    page: data?.page ?? 1,
+                    onChange: (page: string) => setSearchParams({ ...searchParams, page }),
+                }}
             />
         </>
     );

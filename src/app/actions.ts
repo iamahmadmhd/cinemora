@@ -6,7 +6,13 @@ import axios from 'axios';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
-import { MediaBaseInterface, MediaType, MovieMedia, TVShowInterface, TVShowMedia } from 'src/types/types';
+import {
+    MediaBaseInterface,
+    MediaType,
+    MovieMedia,
+    TVShowInterface,
+    TVShowMedia,
+} from 'src/types/types';
 import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
 import { User } from '@supabase/supabase-js';
@@ -127,21 +133,27 @@ const fetchTrendingMedia = async (mediaType: MediaTypes): Promise<MediaBaseInter
         const genres = getGenres(genreResponse.data.genres);
 
         return mediaResponse.data.results
-            .filter((media: MediaType): media is MediaType => ['movie', 'tv'].includes(media.media_type))
+            .filter((media: MediaType): media is MediaType =>
+                ['movie', 'tv'].includes(media.media_type)
+            )
             .map(
                 (media: MediaType): MediaBaseInterface => ({
                     id: media.id,
                     title: media.media_type === 'movie' ? media.title : media.name,
-                    overview: media.overview ? `${media.overview.substring(0, 120)}...` : 'No overview available',
+                    overview: media.overview
+                        ? `${media.overview.substring(0, 120)}...`
+                        : 'No overview available',
                     mediaType: media.media_type,
                     genres: media.genre_ids?.map((id: number) => genres[id] || 'Unknown') ?? [],
                     posterUrl: `${TMDB_IMAGES_URL}/w342${media.poster_path}`,
                     href: `/${media.media_type}/${media.id}`,
-                    releaseDate: media.media_type === 'movie' ? media.release_date : media.first_air_date,
+                    releaseDate:
+                        media.media_type === 'movie' ? media.release_date : media.first_air_date,
                     voteAverage: media.vote_average,
                     voteCount: media.vote_count,
                     popularity: media.popularity,
-                    tagline: media.tagline ?? (media.media_type === 'movie' ? media.title : media.name),
+                    tagline:
+                        media.tagline ?? (media.media_type === 'movie' ? media.title : media.name),
                     status: media.status,
                     originCountry: media.origin_country,
                 })
@@ -230,6 +242,7 @@ const buildSearchParams = (searchParams: Record<string, string>) => {
         releaseYear: 'primary_release_year',
         country: 'with_origin_country',
         language: 'with_original_language',
+        page: 'page',
     };
     const searchParamsString = new URLSearchParams();
     Object.entries(searchParams).forEach(([key, value]) => {
@@ -239,13 +252,17 @@ const buildSearchParams = (searchParams: Record<string, string>) => {
 };
 const fetchMovies = async (searchParams: Record<string, string> = {}) => {
     const searchParamsString = buildSearchParams(searchParams);
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/movie?${searchParamsString}`);
+    const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/movie?${searchParamsString}`
+    );
     return response.data;
 };
 
 const fetchTVShows = async (searchParams: Record<string, string> = {}) => {
     const searchParamsString = buildSearchParams(searchParams);
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tv?${searchParamsString}`);
+    const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tv?${searchParamsString}`
+    );
     return response.data;
 };
 

@@ -17,7 +17,7 @@ import { Form } from '@heroui/react';
 import { GenreType } from '@/types/types';
 import { cn } from '@/utils/classname';
 import { FilterFormValues } from '../media-listing-section';
-import { FormEvent, useEffect } from 'react';
+import { FormEvent } from 'react';
 
 interface FilterDrawerProps extends DrawerBodyProps {
     isOpen: boolean;

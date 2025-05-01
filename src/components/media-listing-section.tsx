@@ -76,12 +76,6 @@ const MediaListingSection: React.FC<MediaGridProps> = ({
                 {headline && <h1 className='text-2xl font-bold'>{headline}</h1>}
                 <div className='flex items-center gap-2'>
                     <Button
-                        startContent={<ArrowUpDown size={16} />}
-                        onPress={onFilterDrawerOpen}
-                    >
-                        Sort
-                    </Button>
-                    <Button
                         startContent={<SlidersHorizontal size={16} />}
                         onPress={onFilterDrawerOpen}
                     >

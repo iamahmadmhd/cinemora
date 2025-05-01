@@ -15,12 +15,7 @@ import { ThemeSwitcher } from '@/ui/theme-switcher';
 import { Button } from '@heroui/button';
 import { useAuth } from '../providers/use-auth';
 import { Avatar } from '@heroui/avatar';
-import {
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
-} from '@heroui/dropdown';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/dropdown';
 import { signout } from '@/app/actions';
 
 type NavItem = {
@@ -160,9 +155,7 @@ const Header: React.FC<HeaderProps> = ({
                 <ThemeSwitcher />
             </NavbarContent>
             {navItems.length > 0 && (
-                <NavbarMenu className='p-8'>
-                    {renderMenuItems(navItems)}
-                </NavbarMenu>
+                <NavbarMenu className='p-8'>{renderMenuItems(navItems)}</NavbarMenu>
             )}
         </Navbar>
     );

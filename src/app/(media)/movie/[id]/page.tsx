@@ -1,13 +1,9 @@
 import { fetchMovieById } from '@/app/actions';
-import { HeroDetail } from '@/components/hero-detail';
-import { MediaDetail } from '@/components/media-detail';
+import { HeroDetailSection } from '@/components/hero-detail-section';
+import { MediaDetailSection } from '@/components/media-detail-section';
 import { getDisplayCountryNames } from '@/utils/helpers';
 
-export default async function MoviePage({
-    params,
-}: {
-    params: Promise<{ id: string }>;
-}) {
+export default async function MoviePage({ params }: { params: Promise<{ id: string }> }) {
     const { id: movieId } = await params;
     const {
         mediaType,
@@ -27,7 +23,7 @@ export default async function MoviePage({
 
     return (
         <div className='grid gap-y-20'>
-            <HeroDetail
+            <HeroDetailSection
                 id={movieId as unknown as number}
                 mediaType={mediaType}
                 title={title}
@@ -38,7 +34,7 @@ export default async function MoviePage({
                 releaseDate={releaseDate}
                 genres={genres}
             />
-            <MediaDetail
+            <MediaDetailSection
                 mediaType={mediaType}
                 title={title}
                 posterUrl={posterUrl}

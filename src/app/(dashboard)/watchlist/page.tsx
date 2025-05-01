@@ -5,10 +5,7 @@ import { createClient } from '@/utils/supabase/server';
 export default async function WatchlistPage() {
     const supabase = await createClient();
     const user = await fetchUser();
-    const { data } = await supabase
-        .from('watchlists')
-        .select()
-        .eq('user_id', user?.id);
+    const { data } = await supabase.from('watchlists').select().eq('user_id', user?.id);
 
     const watchlist = (data ?? []).map((item) => ({
         id: item.media_id,

@@ -41,8 +41,7 @@ const TrendingSection = ({ className }: TrendingSectionProps) => {
     const fetchKey = `trending-${mediaType}`;
 
     const handleButtonClick = useCallback((e: PressEvent) => {
-        const selectedType = (e.target as HTMLButtonElement)
-            .value as MediaTypes;
+        const selectedType = (e.target as HTMLButtonElement).value as MediaTypes;
         if (content[selectedType]) {
             setMediaType(selectedType);
         }

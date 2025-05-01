@@ -16,10 +16,7 @@ const schema = z
         password: z
             .string()
             .min(8, 'Password must be at least 8 characters')
-            .regex(
-                /[A-Z]/,
-                'Password must contain at least one uppercase letter'
-            )
+            .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
             .regex(/[^a-z]/gi, 'Password must contain at least one symbol'),
         confirmPassword: z.string().min(8, 'Confirm Password is required'),
         terms: z.boolean().refine((val) => val === true, {
@@ -139,9 +136,7 @@ export function SignupForm() {
                         I agree to the terms and conditions
                     </Checkbox>
                     {errors.terms?.message && (
-                        <span className='text-danger text-sm'>
-                            {errors.terms.message}
-                        </span>
+                        <span className='text-danger text-sm'>{errors.terms.message}</span>
                     )}
                 </div>
 
@@ -158,11 +153,7 @@ export function SignupForm() {
             </div>
             {response.visible && (
                 <div className='text-small text-default-500 mt-4'>
-                    <span
-                        className={
-                            response.error ? 'text-danger' : 'text-success'
-                        }
-                    >
+                    <span className={response.error ? 'text-danger' : 'text-success'}>
                         {response.message}
                     </span>
                 </div>

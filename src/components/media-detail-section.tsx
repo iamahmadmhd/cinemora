@@ -1,8 +1,5 @@
-import { Image } from '@heroui/image';
 import { Chip } from '@heroui/chip';
 import { Star } from 'lucide-react';
-import NextImage from 'next/image';
-import React from 'react';
 import { TVShowInterface } from 'src/types/types';
 
 enum MediaType {
@@ -10,12 +7,12 @@ enum MediaType {
     tv = 'TV Serie',
 }
 
-type MediaDetailProps = Omit<
+type MediaDetailSectionProps = Omit<
     TVShowInterface,
     'id' | 'backdropUrl' | 'href' | 'voteCount' | 'popularity'
 >;
 
-const MediaDetail = (props: MediaDetailProps) => {
+const MediaDetailSection = (props: MediaDetailSectionProps) => {
     const {
         tagline,
         overview,
@@ -51,9 +48,7 @@ const MediaDetail = (props: MediaDetailProps) => {
                     </ul>
                     <ul>
                         <li className='mb-2 text-gray-500'>
-                            {mediaType === 'movie'
-                                ? 'Release Date'
-                                : 'First Air Date'}
+                            {mediaType === 'movie' ? 'Release Date' : 'First Air Date'}
                         </li>
                         <li>{releaseDate}</li>
                     </ul>
@@ -83,4 +78,4 @@ const MediaDetail = (props: MediaDetailProps) => {
     );
 };
 
-export { MediaDetail };
+export { MediaDetailSection };

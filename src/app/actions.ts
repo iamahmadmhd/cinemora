@@ -6,13 +6,7 @@ import axios from 'axios';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
-import {
-    MediaBaseInterface,
-    MediaType,
-    MovieMedia,
-    TVShowInterface,
-    TVShowMedia,
-} from 'src/types/types';
+import { MediaBaseInterface, MediaType, MovieMedia, TVShowInterface, TVShowMedia } from 'src/types/types';
 import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
 import { User } from '@supabase/supabase-js';
@@ -104,11 +98,7 @@ const fetchProfile = async (): Promise<Profile | null> => {
         } = await supabase.auth.getUser();
         if (!user) return null;
 
-        const { data } = await supabase
-            .from('profiles')
-            .select()
-            .eq('id', user.id)
-            .single();
+        const { data } = await supabase.from('profiles').select().eq('id', user.id).single();
 
         return data || null;
     } catch (error) {
@@ -118,9 +108,7 @@ const fetchProfile = async (): Promise<Profile | null> => {
     return null;
 };
 
-const fetchTrendingMedia = async (
-    mediaType: MediaTypes
-): Promise<MediaBaseInterface[]> => {
+const fetchTrendingMedia = async (mediaType: MediaTypes): Promise<MediaBaseInterface[]> => {
     const genreUrl = `${TMDB_API_URL}/genre/movie/list`;
     const mediaUrl = `${TMDB_API_URL}/trending/${mediaType}/week`;
     const options = {
@@ -139,36 +127,21 @@ const fetchTrendingMedia = async (
         const genres = getGenres(genreResponse.data.genres);
 
         return mediaResponse.data.results
-            .filter((media: MediaType): media is MediaType =>
-                ['movie', 'tv'].includes(media.media_type)
-            )
+            .filter((media: MediaType): media is MediaType => ['movie', 'tv'].includes(media.media_type))
             .map(
                 (media: MediaType): MediaBaseInterface => ({
                     id: media.id,
-                    title:
-                        media.media_type === 'movie' ? media.title : media.name,
-                    overview: media.overview
-                        ? `${media.overview.substring(0, 120)}...`
-                        : 'No overview available',
+                    title: media.media_type === 'movie' ? media.title : media.name,
+                    overview: media.overview ? `${media.overview.substring(0, 120)}...` : 'No overview available',
                     mediaType: media.media_type,
-                    genres:
-                        media.genre_ids?.map(
-                            (id: number) => genres[id] || 'Unknown'
-                        ) ?? [],
+                    genres: media.genre_ids?.map((id: number) => genres[id] || 'Unknown') ?? [],
                     posterUrl: `${TMDB_IMAGES_URL}/w342${media.poster_path}`,
                     href: `/${media.media_type}/${media.id}`,
-                    releaseDate:
-                        media.media_type === 'movie'
-                            ? media.release_date
-                            : media.first_air_date,
+                    releaseDate: media.media_type === 'movie' ? media.release_date : media.first_air_date,
                     voteAverage: media.vote_average,
                     voteCount: media.vote_count,
                     popularity: media.popularity,
-                    tagline:
-                        media.tagline ??
-                        (media.media_type === 'movie'
-                            ? media.title
-                            : media.name),
+                    tagline: media.tagline ?? (media.media_type === 'movie' ? media.title : media.name),
                     status: media.status,
                     originCountry: media.origin_country,
                 })
@@ -190,26 +163,21 @@ const fetchMovieById = async (movieId: string): Promise<MediaBaseInterface> => {
     };
 
     try {
-        const movieResponse: MovieMedia = (await axios.get(movieUrl, options))
-            .data;
+        const movieResponse: MovieMedia = (await axios.get(movieUrl, options)).data;
 
         return {
             id: movieResponse.id,
             title: movieResponse.title,
             overview: movieResponse.overview,
             mediaType: 'movie',
-            genres:
-                movieResponse.genres?.map((genre) => genre.name || 'Unknown') ??
-                [],
+            genres: movieResponse.genres?.map((genre) => genre.name || 'Unknown') ?? [],
             posterUrl: `${TMDB_IMAGES_URL}/w780${movieResponse.poster_path}`,
             backdropUrl: `${TMDB_IMAGES_URL}/w1280${movieResponse.backdrop_path}`,
             releaseDate: movieResponse.release_date,
             voteAverage: movieResponse.vote_average,
             voteCount: movieResponse.vote_count,
             popularity: movieResponse.popularity,
-            tagline: movieResponse.tagline?.length
-                ? movieResponse.tagline
-                : movieResponse.title,
+            tagline: movieResponse.tagline?.length ? movieResponse.tagline : movieResponse.title,
             status: movieResponse.status,
             originCountry: movieResponse.origin_country,
         };
@@ -229,17 +197,14 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     };
 
     try {
-        const showResponse: TVShowMedia = (await axios.get(movieUrl, options))
-            .data;
+        const showResponse: TVShowMedia = (await axios.get(movieUrl, options)).data;
 
         return {
             id: showResponse.id,
             title: showResponse.name,
             overview: showResponse.overview,
             mediaType: 'tv',
-            genres:
-                showResponse.genres?.map((genre) => genre.name || 'Unknown') ??
-                [],
+            genres: showResponse.genres?.map((genre) => genre.name || 'Unknown') ?? [],
             posterUrl: `${TMDB_IMAGES_URL}/w780${showResponse.poster_path}`,
             backdropUrl: `${TMDB_IMAGES_URL}/w1280${showResponse.backdrop_path}`,
             releaseDate: showResponse.first_air_date,
@@ -260,6 +225,7 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
 
 const buildSearchParams = (searchParams: Record<string, string>) => {
     const data = {
+        keywords: 'with_keywords',
         genres: 'with_genres',
         releaseYear: 'primary_release_year',
         country: 'with_origin_country',
@@ -267,37 +233,24 @@ const buildSearchParams = (searchParams: Record<string, string>) => {
     };
     const searchParamsString = new URLSearchParams();
     Object.entries(searchParams).forEach(([key, value]) => {
-        if (value)
-            searchParamsString.append(data[key as keyof typeof data], value);
+        if (value) searchParamsString.append(data[key as keyof typeof data], value);
     });
     return searchParamsString.toString();
 };
 const fetchMovies = async (searchParams: Record<string, string> = {}) => {
     const searchParamsString = buildSearchParams(searchParams);
-    const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/movie?${searchParamsString}`
-    );
-    if (response.status === 200) {
-        return response.data;
-    } else {
-        throw new Error(response.statusText);
-    }
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/movie?${searchParamsString}`);
+    return response.data;
 };
 
 const fetchTVShows = async (searchParams: Record<string, string> = {}) => {
     const searchParamsString = buildSearchParams(searchParams);
-    const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/tv?${searchParamsString}`
-    );
-    if (response.status === 200) {
-        return response.data;
-    } else {
-        throw new Error(response.statusText);
-    }
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tv?${searchParamsString}`);
+    return response.data;
 };
 
-const fetchGenres = async () => {
-    const genreUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/genre/movie/list`;
+const fetchGenres = async (mediaType: string) => {
+    const genreUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/genre/${mediaType}/list`;
     const options = {
         headers: {
             accept: 'application/json',
@@ -305,11 +258,7 @@ const fetchGenres = async () => {
         },
     };
     const response = await axios.get(genreUrl, options);
-    if (response.status === 200) {
-        return response.data.genres;
-    } else {
-        throw new Error(response.statusText);
-    }
+    return response.data.genres;
 };
 
 export {

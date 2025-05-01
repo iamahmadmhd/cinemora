@@ -1,9 +1,10 @@
 import { MediaBaseInterface, TVShowMedia } from '@/types/types';
 import { getGenres } from '@/utils/helpers';
 import axios from 'axios';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const searchParams = request.nextUrl.searchParams.toString();
     try {
         const options = {
             headers: {
@@ -11,7 +12,7 @@ export async function GET() {
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
             },
         };
-        const showsUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/tv?language=en-US&sort_by=popularity.desc`;
+        const showsUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/tv?${searchParams}`;
         const genreUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/genre/tv/list`;
         const [showsResponse, genreResponse] = await Promise.all([
             axios.get(showsUrl, options),
@@ -20,32 +21,27 @@ export async function GET() {
         const genres = getGenres(genreResponse.data.genres);
         const data = showsResponse.data;
         if (showsResponse.status === 200) {
-            const shows: MediaBaseInterface = data.results.map(
-                (show: TVShowMedia) => ({
-                    id: show.id,
-                    title: show.name,
-                    overview: show.overview,
-                    backdropUrl: show.backdrop_path
-                        ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w780${show.backdrop_path}`
-                        : null,
-                    posterUrl: show.poster_path
-                        ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${show.poster_path}`
-                        : null,
-                    releaseDate: show.first_air_date,
-                    mediaType: 'tv',
-                    href: `/${'tv'}/${show.id}`,
-                    genres:
-                        show.genre_ids?.map(
-                            (id: number) => genres[id] || 'Unknown'
-                        ) ?? [],
-                    voteAverage: show.vote_average,
-                    status: show.status,
-                    originCountry: show.origin_country,
-                    voteCount: show.vote_count,
-                    popularity: show.popularity,
-                    tagline: show.tagline,
-                })
-            );
+            const shows: MediaBaseInterface = data.results.map((show: TVShowMedia) => ({
+                id: show.id,
+                title: show.name,
+                overview: show.overview,
+                backdropUrl: show.backdrop_path
+                    ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w780${show.backdrop_path}`
+                    : null,
+                posterUrl: show.poster_path
+                    ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${show.poster_path}`
+                    : null,
+                releaseDate: show.first_air_date,
+                mediaType: 'tv',
+                href: `/${'tv'}/${show.id}`,
+                genres: show.genre_ids?.map((id: number) => genres[id] || 'Unknown') ?? [],
+                voteAverage: show.vote_average,
+                status: show.status,
+                originCountry: show.origin_country,
+                voteCount: show.vote_count,
+                popularity: show.popularity,
+                tagline: show.tagline,
+            }));
             return NextResponse.json(shows, {
                 status: 200,
             });

@@ -21,32 +21,27 @@ export async function GET(request: NextRequest) {
         const genres = getGenres(genreResponse.data.genres);
         const data = moviesResponse.data;
         if (moviesResponse.status === 200) {
-            const movies: MediaBaseInterface = data.results.map(
-                (movie: MovieMedia) => ({
-                    id: movie.id,
-                    title: movie.title,
-                    overview: movie.overview,
-                    backdropUrl: movie.backdrop_path
-                        ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w780${movie.backdrop_path}`
-                        : null,
-                    posterUrl: movie.poster_path
-                        ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${movie.poster_path}`
-                        : null,
-                    releaseDate: movie.release_date,
-                    mediaType: 'movie',
-                    href: `/${'movie'}/${movie.id}`,
-                    genres:
-                        movie.genre_ids?.map(
-                            (id: number) => genres[id] || 'Unknown'
-                        ) ?? [],
-                    voteAverage: movie.vote_average,
-                    status: movie.status,
-                    originCountry: movie.origin_country,
-                    voteCount: movie.vote_count,
-                    popularity: movie.popularity,
-                    tagline: movie.tagline,
-                })
-            );
+            const movies: MediaBaseInterface = data.results.map((movie: MovieMedia) => ({
+                id: movie.id,
+                title: movie.title,
+                overview: movie.overview,
+                backdropUrl: movie.backdrop_path
+                    ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w780${movie.backdrop_path}`
+                    : null,
+                posterUrl: movie.poster_path
+                    ? `${process.env.NEXT_PUBLIC_TMDB_IMAGES_URL}/w342${movie.poster_path}`
+                    : null,
+                releaseDate: movie.release_date,
+                mediaType: 'movie',
+                href: `/${'movie'}/${movie.id}`,
+                genres: movie.genre_ids?.map((id: number) => genres[id] || 'Unknown') ?? [],
+                voteAverage: movie.vote_average,
+                status: movie.status,
+                originCountry: movie.origin_country,
+                voteCount: movie.vote_count,
+                popularity: movie.popularity,
+                tagline: movie.tagline,
+            }));
             return NextResponse.json(movies, {
                 status: 200,
             });
@@ -58,9 +53,7 @@ export async function GET(request: NextRequest) {
                 }
             );
         }
-    } catch (error) {
-        console.log('catched error');
-        console.log({ error });
+    } catch {
         return NextResponse.error();
     }
 }

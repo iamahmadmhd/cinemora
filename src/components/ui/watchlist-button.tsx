@@ -26,14 +26,13 @@ const WatchlistButton = ({
     const { userPromise } = useAuth();
     const isLoggedIn = !!use(userPromise);
 
-    const toastOptions: Pick<ToastProps, 'variant' | 'classNames' | 'timeout'> =
-        useMemo(
-            () => ({
-                variant: 'flat',
-                timeout: 5000,
-            }),
-            []
-        );
+    const toastOptions: Pick<ToastProps, 'variant' | 'classNames' | 'timeout'> = useMemo(
+        () => ({
+            variant: 'flat',
+            timeout: 5000,
+        }),
+        []
+    );
 
     const checkItem = useCallback(async () => {
         await fetch(`/api/watchlist/check?media_id=${id}`)

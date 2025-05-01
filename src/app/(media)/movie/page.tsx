@@ -3,12 +3,12 @@ import { MediaGrid } from '@/components/media-grid';
 
 export default async function MoviePage() {
     return (
-        <>
-            <h1 className='text-2xl font-bold'>Movies</h1>
+        <div className='flex flex-col gap-8 mb-8'>
             <MediaGrid
+                headline='Movies'
                 fetchKey='movie'
                 fetchFunction={fetchMovies}
             />
-        </>
+        </div>
     );
 }

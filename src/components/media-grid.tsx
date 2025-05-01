@@ -1,64 +1,119 @@
 'use client';
 
 import { Button } from '@heroui/button';
-import NextLink from 'next/link';
 import useSWR from 'swr';
-import { cn } from '@/utils/classname';
 import { MediaCard } from './ui/media-card';
 import { Skeleton } from './ui/skeleton';
-import { MediaBaseInterface } from 'src/types/types';
+import { GenreType, MediaBaseInterface } from 'src/types/types';
+import { ArrowUpDown, SlidersHorizontal } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useDisclosure } from '@heroui/use-disclosure';
+import { FilterModal } from './ui/filter-modal';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { fetchGenres } from '@/app/actions';
+
+const filterSchema = z.object({
+    genres: z.string().optional(),
+    releaseYear: z
+        .string()
+        .regex(/^\d{4}$|^$/, 'Invalid year')
+        .optional(),
+    language: z.string().optional(),
+    country: z.string().optional(),
+});
+
+export type FilterFormValues = z.infer<typeof filterSchema>;
 
 interface MediaGridProps {
     headline?: string;
-    link?: string;
-    fetchKey: string; // fetchKey for reusability
-    fetchFunction: () => Promise<MediaBaseInterface[]>; // fetchFunction for reusability
+    fetchKey: string;
+    fetchFunction: (
+        searchParams?: Record<string, string>
+    ) => Promise<MediaBaseInterface[]>;
     className?: string;
 }
 
 const MediaGrid: React.FC<MediaGridProps> = ({
     headline,
-    link = '/',
     fetchKey,
     fetchFunction,
     className,
 }) => {
-    const { data, error, isLoading } = useSWR(fetchKey, fetchFunction);
+    const [searchParams, setSearchParams] = useState<
+        Record<string, string> | undefined
+    >(undefined);
+    const {
+        isOpen: filterModalIsOpen,
+        onOpen: onFilterModalOpen,
+        onOpenChange: onFilterModalOpenChange,
+    } = useDisclosure();
+    const methods = useForm<FilterFormValues>({
+        resolver: zodResolver(filterSchema),
+        values: { ...searchParams },
+    });
+    const {
+        data: genres,
+        error: genresError,
+        isLoading: genresIsLoading,
+    } = useSWR<GenreType[]>('genres', fetchGenres);
+    const { data, error, isLoading } = useSWR<MediaBaseInterface[]>(
+        [fetchKey, searchParams],
+        () => fetchFunction(searchParams)
+    );
 
-    if (error) {
+    if (error || genresError)
         return <p className='text-red-500'>Error: {error.message}</p>;
-    }
 
-    if (!isLoading && !data) {
+    if (!isLoading && !genresIsLoading && !data && !genres)
         return <p className='text-red-500'>No data found</p>;
-    }
 
     return (
-        <div className={cn('flex flex-col gap-8', className)}>
+        <>
             {headline && (
                 <div className='flex justify-between items-center'>
-                    <h4 className='text-lg font-bold'>{headline}</h4>
-                    <Button
-                        as={NextLink}
-                        href={link}
-                        variant='light'
-                        color='primary'
-                    >
-                        Show All
-                    </Button>
+                    <h1 className='text-lg font-bold'>{headline}</h1>
+                    <div className='flex items-center gap-2'>
+                        <Button
+                            startContent={<ArrowUpDown size={16} />}
+                            onPress={onFilterModalOpen}
+                        >
+                            Sort
+                        </Button>
+                        <Button
+                            startContent={<SlidersHorizontal size={16} />}
+                            onPress={onFilterModalOpen}
+                        >
+                            Filter
+                        </Button>
+
+                        <FormProvider {...methods}>
+                            <FilterModal
+                                isOpen={filterModalIsOpen}
+                                onOpenChange={onFilterModalOpenChange}
+                                genres={genres || []}
+                                searchParams={searchParams}
+                                setSearchParams={setSearchParams}
+                                className={className}
+                            />
+                        </FormProvider>
+                    </div>
                 </div>
             )}
             <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
                 {isLoading
-                    ? [...Array(8)].map((_, index) => <Skeleton key={index} />)
-                    : data?.map((item) => (
+                    ? Array.from({ length: 8 }, (_, index) => (
+                          <Skeleton key={index} />
+                      ))
+                    : data?.map((item: MediaBaseInterface) => (
                           <MediaCard
                               key={item.id}
                               content={item}
                           />
                       ))}
             </div>
-        </div>
+        </>
     );
 };
 

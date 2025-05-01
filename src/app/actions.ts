@@ -19,7 +19,7 @@ import { User } from '@supabase/supabase-js';
 import { Profile } from '@/providers/use-auth';
 
 const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL!;
-const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN!;
+const NEXT_PUBLIC_TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY!;
 const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL!;
 
 const handleSupabaseError = (error: unknown, action: string): never => {
@@ -126,7 +126,7 @@ const fetchTrendingMedia = async (
     const options = {
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${TMDB_API_TOKEN}`,
+            Authorization: `Bearer ${NEXT_PUBLIC_TMDB_API_KEY}`,
         },
     };
 
@@ -185,7 +185,7 @@ const fetchMovieById = async (movieId: string): Promise<MediaBaseInterface> => {
     const options = {
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${TMDB_API_TOKEN}`,
+            Authorization: `Bearer ${NEXT_PUBLIC_TMDB_API_KEY}`,
         },
     };
 
@@ -224,7 +224,7 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     const options = {
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${TMDB_API_TOKEN}`,
+            Authorization: `Bearer ${NEXT_PUBLIC_TMDB_API_KEY}`,
         },
     };
 
@@ -258,11 +258,59 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     }
 };
 
-const fetchMovies = async () =>
-    (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/movie`)).data;
+const buildSearchParams = (searchParams: Record<string, string>) => {
+    const data = {
+        genres: 'with_genres',
+        releaseYear: 'primary_release_year',
+        country: 'with_origin_country',
+        language: 'with_original_language',
+    };
+    const searchParamsString = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+        if (value)
+            searchParamsString.append(data[key as keyof typeof data], value);
+    });
+    return searchParamsString.toString();
+};
+const fetchMovies = async (searchParams: Record<string, string> = {}) => {
+    const searchParamsString = buildSearchParams(searchParams);
+    const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/movie?${searchParamsString}`
+    );
+    if (response.status === 200) {
+        return response.data;
+    } else {
+        throw new Error(response.statusText);
+    }
+};
 
-const fetchTVShows = async () =>
-    (await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tv`)).data;
+const fetchTVShows = async (searchParams: Record<string, string> = {}) => {
+    const searchParamsString = buildSearchParams(searchParams);
+    const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tv?${searchParamsString}`
+    );
+    if (response.status === 200) {
+        return response.data;
+    } else {
+        throw new Error(response.statusText);
+    }
+};
+
+const fetchGenres = async () => {
+    const genreUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/genre/movie/list`;
+    const options = {
+        headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+        },
+    };
+    const response = await axios.get(genreUrl, options);
+    if (response.status === 200) {
+        return response.data.genres;
+    } else {
+        throw new Error(response.statusText);
+    }
+};
 
 export {
     login,
@@ -275,4 +323,5 @@ export {
     fetchTVShowById,
     fetchMovies,
     fetchTVShows,
+    fetchGenres,
 };

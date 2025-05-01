@@ -8,10 +8,10 @@ export async function GET() {
         const options = {
             headers: {
                 accept: 'application/json',
-                Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
             },
         };
-        const showsUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/tv?language=en-US`;
+        const showsUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/tv?language=en-US&sort_by=popularity.desc`;
         const genreUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/genre/tv/list`;
         const [showsResponse, genreResponse] = await Promise.all([
             axios.get(showsUrl, options),

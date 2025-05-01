@@ -1,17 +1,18 @@
 import { MediaBaseInterface, MovieMedia } from '@/types/types';
 import { getGenres } from '@/utils/helpers';
 import axios from 'axios';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const searchParams = request.nextUrl.searchParams.toString();
     try {
         const options = {
             headers: {
                 accept: 'application/json',
-                Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
             },
         };
-        const moviesUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/movie?language=en-US`;
+        const moviesUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/movie?${searchParams}`;
         const genreUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/genre/movie/list`;
         const [moviesResponse, genreResponse] = await Promise.all([
             axios.get(moviesUrl, options),
@@ -57,7 +58,9 @@ export async function GET() {
                 }
             );
         }
-    } catch {
+    } catch (error) {
+        console.log('catched error');
+        console.log({ error });
         return NextResponse.error();
     }
 }

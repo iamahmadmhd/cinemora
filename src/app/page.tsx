@@ -11,7 +11,7 @@ const navItems = [
     { label: 'TV Shows', href: '/tv' },
 ];
 
-export default function Home() {
+export default async function Home() {
     return (
         <>
             <Header

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
         const options = {
             headers: {
                 accept: 'application/json',
-                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+                Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
             },
         };
         const showsUrl = `${process.env.NEXT_PUBLIC_TMDB_API_URL}/discover/tv?${searchParams}`;

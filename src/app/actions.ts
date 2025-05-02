@@ -20,7 +20,7 @@ import { Profile } from '@/providers/use-auth';
 import { SearchParams } from '@/components/media-listing-section';
 
 const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL!;
-const NEXT_PUBLIC_TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY!;
+const TMDB_API_KEY = process.env.TMDB_API_KEY!;
 const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL!;
 
 const handleSupabaseError = (error: unknown, action: string): never => {
@@ -121,7 +121,7 @@ const fetchTrendingMedia = async (mediaType: MediaTypes): Promise<MediaBaseInter
     const options = {
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${NEXT_PUBLIC_TMDB_API_KEY}`,
+            Authorization: `Bearer ${TMDB_API_KEY}`,
         },
     };
 
@@ -171,7 +171,7 @@ const fetchMovieById = async (movieId: string): Promise<MediaBaseInterface> => {
     const options = {
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${NEXT_PUBLIC_TMDB_API_KEY}`,
+            Authorization: `Bearer ${TMDB_API_KEY}`,
         },
     };
 
@@ -205,7 +205,7 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     const options = {
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${NEXT_PUBLIC_TMDB_API_KEY}`,
+            Authorization: `Bearer ${TMDB_API_KEY}`,
         },
     };
 
@@ -277,7 +277,7 @@ const fetchGenres = async (mediaType: string) => {
     const options = {
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+            Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
         },
     };
     const response = await axios.get(genreUrl, options);

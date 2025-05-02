@@ -50,7 +50,6 @@ const Header: React.FC<HeaderProps> = ({
                 className={className}
             >
                 <Link
-                    as={Link}
                     color='foreground'
                     size='sm'
                     href={item.href}
@@ -64,7 +63,6 @@ const Header: React.FC<HeaderProps> = ({
         items.map((item, index) => (
             <NavbarMenuItem key={`${item.label}-${index}`}>
                 <Link
-                    as={Link}
                     className='w-full'
                     color='foreground'
                     href={item.href}

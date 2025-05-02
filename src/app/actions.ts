@@ -17,6 +17,7 @@ import { SignupFormProps } from '@/components/forms/signup-form';
 import { LoginFormProps } from '@/components/forms/login-form';
 import { User } from '@supabase/supabase-js';
 import { Profile } from '@/providers/use-auth';
+import { SearchParams } from '@/components/media-listing-section';
 
 const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL!;
 const NEXT_PUBLIC_TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY!;
@@ -235,22 +236,27 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     }
 };
 
-const buildSearchParams = (searchParams: Record<string, string>) => {
+const buildSearchParams = (searchParams: SearchParams) => {
     const data = {
         keywords: 'with_keywords',
         genres: 'with_genres',
         releaseYear: 'primary_release_year',
         country: 'with_origin_country',
         language: 'with_original_language',
+        sort: 'sort_by',
         page: 'page',
     };
     const searchParamsString = new URLSearchParams();
     Object.entries(searchParams).forEach(([key, value]) => {
-        if (value) searchParamsString.append(data[key as keyof typeof data], value);
+        if (value) {
+            const stringValue =
+                typeof value === 'string' ? value : `${value.name + '.' + value.order}`;
+            searchParamsString.append(data[key as keyof typeof data], stringValue);
+        }
     });
     return searchParamsString.toString();
 };
-const fetchMovies = async (searchParams: Record<string, string> = {}) => {
+const fetchMovies = async (searchParams: SearchParams = {}) => {
     const searchParamsString = buildSearchParams(searchParams);
     const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/movie?${searchParamsString}`
@@ -258,7 +264,7 @@ const fetchMovies = async (searchParams: Record<string, string> = {}) => {
     return response.data;
 };
 
-const fetchTVShows = async (searchParams: Record<string, string> = {}) => {
+const fetchTVShows = async (searchParams: SearchParams = {}) => {
     const searchParamsString = buildSearchParams(searchParams);
     const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/api/tv?${searchParamsString}`

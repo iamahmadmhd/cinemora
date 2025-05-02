@@ -3,8 +3,8 @@
 import { Button } from '@heroui/button';
 import useSWR from 'swr';
 import { GenreType, MediaBaseInterface } from 'src/types/types';
-import { ArrowUpDown, SlidersHorizontal } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowDownUp, SlidersHorizontal } from 'lucide-react';
+import { Fragment, useState } from 'react';
 import { useDisclosure } from '@heroui/use-disclosure';
 import { FilterDrawer } from './ui/filter-drawer';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { fetchGenres } from '@/app/actions';
 import { cn } from '@/utils/classname';
 import { MediaGrid } from './media-grid';
+import { SortPopover } from './ui/sort-popover';
 
 const filterSchema = z.object({
     keywords: z.string().optional(),
@@ -34,22 +35,56 @@ interface MediaResponse {
     totalResults: number;
 }
 
-interface MediaGridProps {
+interface MediaListingSectionProps {
     headline?: string;
     mediaType: string;
     fetchKey: string;
-    fetchFunction: (searchParams?: Record<string, string>) => Promise<MediaResponse>;
+    fetchFunction: (searchParams?: SearchParams) => Promise<MediaResponse>;
     className?: string;
 }
 
-const MediaListingSection: React.FC<MediaGridProps> = ({
+const sortingOptions = [
+    {
+        key: 'original_title',
+        name: 'Original Title',
+    },
+    {
+        key: 'popularity',
+        name: 'Popularity',
+    },
+    {
+        key: 'primary_release_date',
+        name: 'Release Date',
+    },
+    {
+        key: 'title',
+        name: 'Title',
+    },
+    {
+        key: 'vote_average',
+        name: 'Vote Average',
+    },
+];
+
+export type SearchParams = {
+    genres?: string;
+    releaseYear?: string;
+    language?: string;
+    country?: string;
+    sort?: {
+        name: string;
+        order: 'desc' | 'asc';
+    };
+    page?: string;
+};
+
+const MediaListingSection: React.FC<MediaListingSectionProps> = ({
     headline,
     mediaType,
-    fetchKey,
     fetchFunction,
     className,
 }) => {
-    const [searchParams, setSearchParams] = useState<Record<string, string> | undefined>(undefined);
+    const [searchParams, setSearchParams] = useState<SearchParams>({});
 
     const {
         isOpen: FilterDrawerIsOpen,
@@ -68,7 +103,7 @@ const MediaListingSection: React.FC<MediaGridProps> = ({
         isLoading: genresIsLoading,
     } = useSWR<GenreType[]>('genres', () => fetchGenres(mediaType));
 
-    const { data, error, isLoading } = useSWR<MediaResponse>([fetchKey, searchParams], () =>
+    const { data, error, isLoading } = useSWR<MediaResponse>([searchParams], () =>
         fetchFunction(searchParams)
     );
 
@@ -79,21 +114,23 @@ const MediaListingSection: React.FC<MediaGridProps> = ({
 
     return (
         <>
-            <div className={cn('flex justify-between items-center', className)}>
+            <div
+                className={cn(
+                    'grid grid-cols-1 lg:grid-cols-3 justify-between items-center gap-y-8',
+                    className
+                )}
+            >
                 {headline && <h1 className='text-2xl font-bold'>{headline}</h1>}
-                <div className='flex items-center gap-2'>
-                    <Button
-                        startContent={<SlidersHorizontal size={16} />}
-                        onPress={onFilterDrawerOpen}
-                    >
-                        Filter
-                    </Button>
-
+                <div className='md:col-span-2 flex flex-wrap justify-end items-center gap-2'>
+                    <SortPopover
+                        sortingOptions={sortingOptions}
+                        searchParams={searchParams ?? {}}
+                        setSearchParams={setSearchParams}
+                    />
                     <FormProvider {...methods}>
                         <FilterDrawer
-                            isOpen={FilterDrawerIsOpen}
-                            onOpenChange={onFilterDrawerOpenChange}
                             genres={genres ?? []}
+                            searchParams={searchParams}
                             setSearchParams={setSearchParams}
                         />
                     </FormProvider>

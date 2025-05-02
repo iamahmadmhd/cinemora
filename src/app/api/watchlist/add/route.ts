@@ -11,23 +11,11 @@ export async function POST(req: Request) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    const {
-        id,
-        title,
-        overview,
-        posterUrl,
-        releaseDate,
-        mediaType,
-        href,
-        genres,
-        voteAverage,
-    } = await req.json();
+    const { id, title, overview, posterUrl, releaseDate, mediaType, href, genres, voteAverage } =
+        await req.json();
 
     if (!id) {
-        return NextResponse.json(
-            { message: 'Movie id is required.' },
-            { status: 400 }
-        );
+        return NextResponse.json({ message: 'Movie id is required.' }, { status: 400 });
     }
 
     if (!user) {
@@ -55,15 +43,11 @@ export async function POST(req: Request) {
         .select();
 
     if (error) {
-        console.log({ error });
         return NextResponse.json(
             { message: error.message },
             { status: getErrorStatusCode(error as unknown as string) }
         );
     }
 
-    return NextResponse.json(
-        { message: 'Item added successfully', data },
-        { status: 200 }
-    );
+    return NextResponse.json({ message: 'Item added successfully', data }, { status: 200 });
 }

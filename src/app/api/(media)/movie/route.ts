@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
             axios.get(genreUrl, options),
         ]);
         const genres = getGenres(genreResponse.data.genres);
-        console.log({ moviesResponse });
         const data = moviesResponse.data;
         if (moviesResponse.status === 200) {
             const movies: MediaBaseInterface = data.results.map((movie: MovieMedia) => ({

@@ -1,11 +1,8 @@
 'use client';
 
-import { Button } from '@heroui/button';
 import useSWR from 'swr';
 import { GenreType, MediaBaseInterface } from 'src/types/types';
-import { ArrowDownUp, SlidersHorizontal } from 'lucide-react';
-import { Fragment, useState } from 'react';
-import { useDisclosure } from '@heroui/use-disclosure';
+import { useState } from 'react';
 import { FilterDrawer } from './ui/filter-drawer';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -85,12 +82,6 @@ const MediaListingSection: React.FC<MediaListingSectionProps> = ({
     className,
 }) => {
     const [searchParams, setSearchParams] = useState<SearchParams>({});
-
-    const {
-        isOpen: FilterDrawerIsOpen,
-        onOpen: onFilterDrawerOpen,
-        onOpenChange: onFilterDrawerOpenChange,
-    } = useDisclosure();
 
     const methods = useForm<FilterFormValues>({
         resolver: zodResolver(filterSchema),

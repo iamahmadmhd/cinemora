@@ -4,7 +4,7 @@ import { Button } from '@heroui/button';
 import { addToast, type ToastProps } from '@heroui/toast';
 import { Tooltip } from '@heroui/tooltip';
 import axios from 'axios';
-import { Bookmark } from 'lucide-react';
+import { Bookmark, ListPlus } from 'lucide-react';
 import { useEffect, useState, useCallback, useMemo, use } from 'react';
 import { useAuth } from '@/providers/use-auth';
 import { WatchlistTableItem } from '../watchlist-table';
@@ -129,15 +129,13 @@ const WatchlistButton = ({
         >
             <Button
                 isIconOnly
-                variant={'light'}
+                variant={isAdded ? 'shadow' : 'faded'}
                 color='primary'
+                size='lg'
                 isLoading={loading}
                 onPress={handleClick}
             >
-                <Bookmark
-                    size={20}
-                    fill={isAdded ? 'currentColor' : 'none'}
-                />
+                <ListPlus stroke={isAdded ? 'currentColor' : 'white'} />
             </Button>
         </Tooltip>
     );

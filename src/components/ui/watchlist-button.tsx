@@ -135,7 +135,7 @@ const WatchlistButton = ({
                 isLoading={loading}
                 onPress={handleClick}
             >
-                <ListPlus stroke={isAdded ? 'currentColor' : 'white'} />
+                <ListPlus className={isAdded ? 'stroke-current' : 'stroke-foreground'} />
             </Button>
         </Tooltip>
     );

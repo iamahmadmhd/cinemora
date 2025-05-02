@@ -78,6 +78,7 @@ export type SearchParams = {
 const MediaListingSection: React.FC<MediaListingSectionProps> = ({
     headline,
     mediaType,
+    fetchKey,
     fetchFunction,
     className,
 }) => {
@@ -94,7 +95,7 @@ const MediaListingSection: React.FC<MediaListingSectionProps> = ({
         isLoading: genresIsLoading,
     } = useSWR<GenreType[]>('genres', () => fetchGenres(mediaType));
 
-    const { data, error, isLoading } = useSWR<MediaResponse>([searchParams], () =>
+    const { data, error, isLoading } = useSWR<MediaResponse>([fetchKey, searchParams], () =>
         fetchFunction(searchParams)
     );
 

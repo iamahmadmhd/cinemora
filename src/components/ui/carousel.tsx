@@ -19,9 +19,7 @@ type UseDotButtonType = {
     onDotButtonClick: (index: number) => void;
 };
 
-const usePrevNextButtons = (
-    emblaApi: EmblaCarouselType | undefined
-): UsePrevNextButtonsType => {
+const usePrevNextButtons = (emblaApi: EmblaCarouselType | undefined): UsePrevNextButtonsType => {
     const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
     const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
 
@@ -55,9 +53,7 @@ const usePrevNextButtons = (
     };
 };
 
-const useDotButton = (
-    emblaApi: EmblaCarouselType | undefined
-): UseDotButtonType => {
+const useDotButton = (emblaApi: EmblaCarouselType | undefined): UseDotButtonType => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
@@ -82,10 +78,7 @@ const useDotButton = (
 
         onInit(emblaApi);
         onSelect(emblaApi);
-        emblaApi
-            .on('reInit', onInit)
-            .on('reInit', onSelect)
-            .on('select', onSelect);
+        emblaApi.on('reInit', onInit).on('reInit', onSelect).on('select', onSelect);
     }, [emblaApi, onInit, onSelect]);
 
     return {
@@ -144,12 +137,8 @@ const Carousel: React.FC<CarouselProps> = (props) => {
     const { options, loading, className, children } = props;
     const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
-    const {
-        prevBtnDisabled,
-        nextBtnDisabled,
-        onPrevButtonClick,
-        onNextButtonClick,
-    } = usePrevNextButtons(emblaApi);
+    const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
+        usePrevNextButtons(emblaApi);
 
     return (
         <div className={cn('relative', className)}>
@@ -158,18 +147,16 @@ const Carousel: React.FC<CarouselProps> = (props) => {
                 ref={emblaRef}
             >
                 <div className='carousel-container flex -ml-4 touch-pan-y touch-pinch-zoom'>
-                    {[
-                        ...(loading
-                            ? [1, 2, 3, 4]
-                            : React.Children.toArray(children)),
-                    ].map((item, index) => (
-                        <div
-                            key={index}
-                            className='pl-4 translate-3d flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_25%]'
-                        >
-                            {loading ? <Skeleton key={index} /> : item}
-                        </div>
-                    ))}
+                    {[...(loading ? [1, 2, 3, 4] : React.Children.toArray(children))].map(
+                        (item, index) => (
+                            <div
+                                key={index}
+                                className='pl-4 translate-3d flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_25%]'
+                            >
+                                {loading ? <Skeleton key={index} /> : item}
+                            </div>
+                        )
+                    )}
                 </div>
             </div>
             <div className='carousel__controls'>

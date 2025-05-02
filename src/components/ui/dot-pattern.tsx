@@ -79,8 +79,7 @@ export function DotPattern({
     useEffect(() => {
         const updateDimensions = () => {
             if (containerRef.current) {
-                const { width, height } =
-                    containerRef.current.getBoundingClientRect();
+                const { width, height } = containerRef.current.getBoundingClientRect();
                 setDimensions({ width, height });
             }
         };
@@ -92,9 +91,7 @@ export function DotPattern({
 
     const dots = Array.from(
         {
-            length:
-                Math.ceil(dimensions.width / width) *
-                Math.ceil(dimensions.height / height),
+            length: Math.ceil(dimensions.width / width) * Math.ceil(dimensions.height / height),
         },
         (_, i) => {
             const col = i % Math.ceil(dimensions.width / width);
@@ -112,10 +109,7 @@ export function DotPattern({
         <svg
             ref={containerRef}
             aria-hidden='true'
-            className={cn(
-                'pointer-events-none absolute inset-0 h-full w-full',
-                className
-            )}
+            className={cn('pointer-events-none absolute inset-0 h-full w-full', className)}
             {...props}
         >
             <defs>

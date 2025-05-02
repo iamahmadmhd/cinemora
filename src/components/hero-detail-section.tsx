@@ -6,12 +6,12 @@ import { cn } from '@/utils/classname';
 import { WatchlistButton } from './ui/watchlist-button';
 import { WatchlistTableItem } from './watchlist-table';
 
-type HeroDetailProps = Omit<WatchlistTableItem, 'id'> & {
+type HeroDetailSectionProps = Omit<WatchlistTableItem, 'id'> & {
     id: number;
     className?: string;
 };
 
-const HeroDetail = (props: HeroDetailProps) => {
+const HeroDetailSection = (props: HeroDetailSectionProps) => {
     const {
         id,
         title,
@@ -59,5 +59,5 @@ const HeroDetail = (props: HeroDetailProps) => {
     );
 };
 
-export { HeroDetail };
-export type { HeroDetailProps };
+export { HeroDetailSection };
+export type { HeroDetailSectionProps };

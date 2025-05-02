@@ -1,14 +1,15 @@
 import { fetchTVShows } from '@/app/actions';
-import { MediaGrid } from '@/components/media-grid';
+import { MediaListingSection } from '@/components/media-listing-section';
 
 export default async function TVShowsPage() {
     return (
-        <>
-            <h1 className='text-2xl font-bold'>Movies</h1>
-            <MediaGrid
-                fetchKey='tv'
+        <div className='flex flex-col gap-8 mb-8'>
+            <MediaListingSection
+                headline='TV Shows'
+                mediaType='tv'
+                fetchKey='tvshows'
                 fetchFunction={fetchTVShows}
             />
-        </>
+        </div>
     );
 }

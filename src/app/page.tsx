@@ -11,7 +11,7 @@ const navItems = [
     { label: 'TV Shows', href: '/tv' },
 ];
 
-export default function Home() {
+export default async function Home() {
     return (
         <>
             <Header
@@ -31,13 +31,10 @@ export default function Home() {
             <main>
                 <section className='py-20 relative min-h-96'>
                     <div className='max-w-[800px] relative z-30 mx-auto px-6 flex flex-col justify-center items-center'>
-                        <h1 className='text-4xl text-center font-bold mb-8'>
-                            Welcome to Cinemora
-                        </h1>
+                        <h1 className='text-4xl text-center font-bold mb-8'>Welcome to Cinemora</h1>
                         <p className='mb-8 text-center'>
-                            Discover the latest movies and TV shows, all in one
-                            place. Add your favorites to your watchlist and
-                            never miss a release!
+                            Discover the latest movies and TV shows, all in one place. Add your
+                            favorites to your watchlist and never miss a release!
                         </p>
                         <Button
                             as={Link}

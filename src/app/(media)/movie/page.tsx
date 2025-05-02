@@ -1,14 +1,15 @@
 import { fetchMovies } from '@/app/actions';
-import { MediaGrid } from '@/components/media-grid';
+import { MediaListingSection } from '@/components/media-listing-section';
 
 export default async function MoviePage() {
     return (
-        <>
-            <h1 className='text-2xl font-bold'>Movies</h1>
-            <MediaGrid
+        <div className='flex flex-col gap-8 mb-8'>
+            <MediaListingSection
+                headline='Movies'
+                mediaType='movie'
                 fetchKey='movie'
                 fetchFunction={fetchMovies}
             />
-        </>
+        </div>
     );
 }

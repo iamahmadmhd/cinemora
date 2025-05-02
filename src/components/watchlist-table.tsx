@@ -1,13 +1,6 @@
 'use client';
 
-import {
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-} from '@heroui/table';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/table';
 import { Chip } from '@heroui/chip';
 import { Tooltip } from '@heroui/tooltip';
 import { MediaBaseInterface } from '@/types/types';
@@ -98,9 +91,7 @@ const WatchlistTable = ({ items }: WatchlistTableProps) => {
             }}
         >
             <TableHeader columns={columns}>
-                {(column) => (
-                    <TableColumn key={column.uid}>{column.name}</TableColumn>
-                )}
+                {(column) => <TableColumn key={column.uid}>{column.name}</TableColumn>}
             </TableHeader>
             <TableBody
                 emptyContent='You have no items in your watchlist.'
@@ -110,9 +101,7 @@ const WatchlistTable = ({ items }: WatchlistTableProps) => {
                     <TableRow key={item.id}>
                         {(columnKey) => (
                             <TableCell>
-                                {columnKey === 'title' && (
-                                    <span>{item.title}</span>
-                                )}
+                                {columnKey === 'title' && <span>{item.title}</span>}
                                 {columnKey === 'genres' && (
                                     <div className='flex gap-2'>
                                         {item.genres.map((genre) => (
@@ -143,11 +132,7 @@ const WatchlistTable = ({ items }: WatchlistTableProps) => {
                                             variant='light'
                                             size='sm'
                                             color='danger'
-                                            onPress={() =>
-                                                handleRemoveFromWatchlist(
-                                                    item.id
-                                                )
-                                            }
+                                            onPress={() => handleRemoveFromWatchlist(item.id)}
                                         >
                                             <Trash2 size={16} />
                                         </Button>

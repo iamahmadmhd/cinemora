@@ -19,7 +19,7 @@ export default async function RootLayout({
     const profilePromise = fetchProfile();
     return (
         <html lang='en'>
-            <body className='bg-[url("/page-background.svg")] bg-fixed bg-cover min-h-lvh'>
+            <body className='min-h-lvh'>
                 <AuthProvider
                     userPromise={userPromise}
                     profilePromise={profilePromise}
@@ -28,6 +28,7 @@ export default async function RootLayout({
                         themeProps={{
                             attribute: 'class',
                             defaultTheme: 'system',
+                            disableTransitionOnChange: true,
                         }}
                     >
                         {children}

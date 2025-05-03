@@ -22,7 +22,6 @@ export function ThemeSwitcher() {
                 setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
             }}
             variant='light'
-            color='secondary'
             radius='full'
         >
             {resolvedTheme === 'dark' ? <Moon /> : <Sun />}

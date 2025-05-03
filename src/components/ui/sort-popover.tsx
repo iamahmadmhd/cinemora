@@ -73,7 +73,7 @@ const SortPopover = ({ sortingOptions, searchParams, setSearchParams }: SortPopo
                         onChange={onChange}
                         label='Sort by'
                         placeholder='Select a sorting option'
-                        variant='faded'
+                        variant='bordered'
                         size='sm'
                         className='w-full md:w-3xs'
                     >
@@ -103,8 +103,8 @@ const SortPopover = ({ sortingOptions, searchParams, setSearchParams }: SortPopo
                             onChange={onChange}
                             isDisabled={!searchParams.sort?.name.length}
                             label='Sort order'
+                            variant='bordered'
                             placeholder='Select a sorting order'
-                            variant='faded'
                             size='sm'
                             className='w-full md:w-3xs'
                         >

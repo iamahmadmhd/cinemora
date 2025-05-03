@@ -10,7 +10,7 @@ import {
     NavbarMenuToggle,
 } from '@heroui/navbar';
 import { Link } from '@heroui/link';
-import { ComponentProps, ReactNode, use, useEffect, useState } from 'react';
+import { ComponentProps, ReactNode, use, useState } from 'react';
 import { ThemeSwitcher } from '@/ui/theme-switcher';
 import { Button } from '@heroui/button';
 import { useAuth } from '../providers/use-auth';
@@ -153,7 +153,9 @@ const Header: React.FC<HeaderProps> = ({
             <NavbarContent justify='end'>
                 {renderNavItems(navItems, 'hidden sm:flex')}
                 {renderButton()}
-                <ThemeSwitcher />
+                <NavbarItem>
+                    <ThemeSwitcher />
+                </NavbarItem>
             </NavbarContent>
             {navItems.length > 0 && (
                 <NavbarMenu className='p-8'>{renderMenuItems(navItems)}</NavbarMenu>

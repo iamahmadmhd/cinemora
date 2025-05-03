@@ -55,6 +55,7 @@ const FilterDrawer = ({
                 size='lg'
                 startContent={<SlidersHorizontal />}
                 onPress={onOpen}
+                color='primary'
                 className='w-full md:w-auto'
             >
                 Filter

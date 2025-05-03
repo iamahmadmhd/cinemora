@@ -10,13 +10,14 @@ import {
     NavbarMenuToggle,
 } from '@heroui/navbar';
 import { Link } from '@heroui/link';
-import { ComponentProps, ReactNode, use, useState } from 'react';
+import { ComponentProps, ReactNode, use, useEffect, useState } from 'react';
 import { ThemeSwitcher } from '@/ui/theme-switcher';
 import { Button } from '@heroui/button';
 import { useAuth } from '../providers/use-auth';
 import { Avatar } from '@heroui/avatar';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/dropdown';
 import { signout } from '@/app/actions';
+import { cn } from '@/utils/classname';
 
 type NavItem = {
     label: string;
@@ -67,6 +68,7 @@ const Header: React.FC<HeaderProps> = ({
                     color='foreground'
                     href={item.href}
                     size='md'
+                    onPress={() => setIsMenuOpen(!isMenuOpen)}
                 >
                     {item.label}
                 </Link>
@@ -132,7 +134,8 @@ const Header: React.FC<HeaderProps> = ({
         <Navbar
             isBordered
             onMenuOpenChange={setIsMenuOpen}
-            className={className}
+            isMenuOpen={isMenuOpen}
+            className={cn(className)}
             classNames={{
                 wrapper: 'max-w-[1200px] mx-auto px-6 py-4',
             }}

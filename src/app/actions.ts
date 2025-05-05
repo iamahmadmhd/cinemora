@@ -1,7 +1,7 @@
 'use server';
 
 import { MediaTypes } from '@/components/trending-section';
-import { getGenres } from '@/utils/helpers';
+import { buildSearchParams, getGenres } from '@/utils/helpers';
 import axios from 'axios';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -236,26 +236,6 @@ const fetchTVShowById = async (showId: string): Promise<TVShowInterface> => {
     }
 };
 
-const buildSearchParams = (searchParams: SearchParams) => {
-    const data = {
-        keywords: 'with_keywords',
-        genres: 'with_genres',
-        releaseYear: 'primary_release_year',
-        country: 'with_origin_country',
-        language: 'with_original_language',
-        sort: 'sort_by',
-        page: 'page',
-    };
-    const searchParamsString = new URLSearchParams();
-    Object.entries(searchParams).forEach(([key, value]) => {
-        if (value) {
-            const stringValue =
-                typeof value === 'string' ? value : `${value.name + '.' + value.order}`;
-            searchParamsString.append(data[key as keyof typeof data], stringValue);
-        }
-    });
-    return searchParamsString.toString();
-};
 const fetchMovies = async (searchParams: SearchParams = {}) => {
     const searchParamsString = buildSearchParams(searchParams);
     const response = await axios.get(

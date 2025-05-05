@@ -1,11 +1,9 @@
+import { SearchParams } from '@/components/media-listing-section';
 import * as lookup from 'country-code-lookup';
 
 const getGenres = (genres: { id: number; name: string }[]) => {
     return genres.reduce(
-        (
-            acc: Record<number, string>,
-            { id, name }: { id: number; name: string }
-        ) => {
+        (acc: Record<number, string>, { id, name }: { id: number; name: string }) => {
             acc[id] = name;
             return acc;
         },
@@ -42,4 +40,25 @@ const getErrorStatusCode = (code: string) => {
     }
 };
 
-export { getGenres, getDisplayCountryNames, getErrorStatusCode };
+const buildSearchParams = (searchParams: SearchParams) => {
+    const data = {
+        keywords: 'with_keywords',
+        genres: 'with_genres',
+        releaseYear: 'primary_release_year',
+        country: 'with_origin_country',
+        language: 'with_original_language',
+        sort: 'sort_by',
+        page: 'page',
+    };
+    const searchParamsString = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+        if (value) {
+            const stringValue =
+                typeof value === 'string' ? value : `${value.name + '.' + value.order}`;
+            searchParamsString.append(data[key as keyof typeof data], stringValue);
+        }
+    });
+    return searchParamsString.toString();
+};
+
+export { getGenres, getDisplayCountryNames, getErrorStatusCode, buildSearchParams };

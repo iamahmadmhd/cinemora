@@ -19,8 +19,8 @@ const filterSchema = z.object({
         .string()
         .regex(/^\d{4}$|^$/, 'Invalid year')
         .optional(),
-    language: z.string().optional(),
-    country: z.string().optional(),
+    language: z.string().optional().nullable(),
+    country: z.string().optional().nullable(),
 });
 
 export type FilterFormValues = z.infer<typeof filterSchema>;

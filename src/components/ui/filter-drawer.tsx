@@ -8,6 +8,7 @@ import {
     DrawerFooter,
     DrawerBodyProps,
 } from '@heroui/drawer';
+import { Autocomplete, AutocompleteSection, AutocompleteItem } from '@heroui/autocomplete';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { countries, languages } from 'countries-list';
@@ -148,8 +149,8 @@ const FilterDrawer = ({
                                         field: { name, value, onChange, onBlur, ref },
                                         fieldState: { invalid, error },
                                     }) => (
-                                        <Select
-                                            items={Object.keys(languages)
+                                        <Autocomplete
+                                            defaultItems={Object.keys(languages)
                                                 .map((key) => ({ key }))
                                                 .sort((a, b) =>
                                                     languages[
@@ -164,9 +165,9 @@ const FilterDrawer = ({
                                             validationBehavior='aria'
                                             isInvalid={invalid}
                                             name={name}
-                                            defaultSelectedKeys={value?.split(',')}
+                                            defaultSelectedKey={value ?? undefined}
+                                            onSelectionChange={onChange}
                                             onBlur={onBlur}
-                                            onChange={onChange}
                                             label='Language'
                                             placeholder='Select language'
                                             variant='faded'
@@ -180,15 +181,15 @@ const FilterDrawer = ({
                                                     )
                                                 )
                                                 .map((lang) => (
-                                                    <SelectItem key={lang}>
+                                                    <AutocompleteItem key={lang}>
                                                         {
                                                             languages[
                                                                 lang as keyof typeof languages
                                                             ].name
                                                         }
-                                                    </SelectItem>
+                                                    </AutocompleteItem>
                                                 ))}
-                                        </Select>
+                                        </Autocomplete>
                                     )}
                                 />
                                 <Controller
@@ -198,8 +199,8 @@ const FilterDrawer = ({
                                         field: { name, value, onChange, onBlur, ref },
                                         fieldState: { invalid, error },
                                     }) => (
-                                        <Select
-                                            items={Object.keys(countries)
+                                        <Autocomplete
+                                            defaultItems={Object.keys(countries)
                                                 .map((key) => ({ key }))
                                                 .sort((a, b) =>
                                                     countries[
@@ -214,9 +215,9 @@ const FilterDrawer = ({
                                             validationBehavior='aria'
                                             isInvalid={invalid}
                                             name={name}
-                                            defaultSelectedKeys={value?.split(',')}
+                                            defaultSelectedKey={value ?? undefined}
                                             onBlur={onBlur}
-                                            onChange={onChange}
+                                            onSelectionChange={onChange}
                                             label='Country'
                                             placeholder='Select country'
                                             variant='faded'
@@ -230,15 +231,15 @@ const FilterDrawer = ({
                                                     )
                                                 )
                                                 .map((country) => (
-                                                    <SelectItem key={country}>
+                                                    <AutocompleteItem key={country}>
                                                         {
                                                             countries[
                                                                 country as keyof typeof countries
                                                             ].name
                                                         }
-                                                    </SelectItem>
+                                                    </AutocompleteItem>
                                                 ))}
-                                        </Select>
+                                        </Autocomplete>
                                     )}
                                 />
                             </DrawerBody>

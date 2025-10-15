@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server';
 import { Database } from '@/types/supabase';
 import { getErrorStatusCode } from '@/utils/helpers';
 
-type watchlist = Database['public']['Tables']['watchlists']['Row'];
+type Watchlist = Database['public']['Tables']['watchlists']['Row'];
 
 export async function POST(req: Request) {
     const supabase = await createClient();
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     // Insert item
     const { data, error } = await supabase
         .from('watchlists')
-        .insert<watchlist>([
+        .insert<Watchlist>([
             {
                 user_id: user.id,
                 media_id: id as string, // Ensure media_id is a string

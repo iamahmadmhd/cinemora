@@ -13,9 +13,7 @@ import {
     TVShowInterface,
     TVShowMedia,
 } from 'src/types/types';
-import { SignupFormProps } from '@/components/forms/signup-form';
-import { LoginFormProps } from '@/components/forms/login-form';
-import { User } from '@supabase/supabase-js';
+import { EmailOtpType, User } from '@supabase/supabase-js';
 import { Profile } from '@/providers/use-auth';
 import { SearchParams } from '@/components/media-listing-section';
 
@@ -23,63 +21,217 @@ const TMDB_API_URL = process.env.NEXT_PUBLIC_TMDB_API_URL!;
 const TMDB_API_KEY = process.env.TMDB_API_KEY!;
 const TMDB_IMAGES_URL = process.env.NEXT_PUBLIC_TMDB_IMAGES_URL!;
 
-const handleSupabaseError = (error: unknown, action: string): never => {
-    console.error(`Error during ${action}:`, error);
-    throw new Error(String(error) || `Failed to ${action}`);
+// Types
+export type ActionResponse = {
+    status: number;
+    message: string;
 };
 
-const login = async (formData: LoginFormProps) => {
-    const supabase = await createClient();
+export type LoginFormData = {
+    email: string;
+    password: string;
+};
 
+export type SignupFormData = {
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+};
+
+// Constants
+const GENERIC_AUTH_ERROR = 'Invalid email or password';
+const GENERIC_SERVER_ERROR = 'An unexpected error occurred. Please try again.';
+const SIGNUP_SUCCESS = 'Please check your email to verify your account.';
+
+// Helper to sanitize error messages
+const sanitizeAuthError = (error: unknown): string => {
+    if (!error) return GENERIC_SERVER_ERROR;
+
+    // Never expose specific Supabase errors to prevent user enumeration
+    const errorMessage = error instanceof Error ? error.message.toLowerCase() : '';
+
+    if (
+        errorMessage.includes('email') ||
+        errorMessage.includes('password') ||
+        errorMessage.includes('invalid')
+    ) {
+        return GENERIC_AUTH_ERROR;
+    }
+
+    if (errorMessage.includes('rate limit')) {
+        return 'Too many attempts. Please try again later.';
+    }
+
+    return GENERIC_SERVER_ERROR;
+};
+
+// Login action
+const login = async (formData: LoginFormData): Promise<ActionResponse> => {
     try {
+        const supabase = await createClient();
+
         const { error } = await supabase.auth.signInWithPassword({
-            email: formData.email,
+            email: formData.email.trim().toLowerCase(),
             password: formData.password,
         });
 
-        if (error) handleSupabaseError(error, 'login');
+        if (error) {
+            console.error('Login error:', error.message);
+            return {
+                status: 401,
+                message: sanitizeAuthError(error),
+            };
+        }
 
-        revalidatePath('/');
-        return { status: 200, message: 'Login successful' };
+        // Revalidate all layouts to update auth state
+        revalidatePath('/', 'layout');
+
+        return {
+            status: 200,
+            message: 'Login successful',
+        };
     } catch (error) {
-        handleSupabaseError(error, 'login');
+        console.error('Unexpected login error:', error);
+        return {
+            status: 500,
+            message: GENERIC_SERVER_ERROR,
+        };
     }
 };
 
-const signup = async (formData: SignupFormProps) => {
-    const supabase = await createClient();
-
+// Signup action
+const signup = async (formData: SignupFormData): Promise<ActionResponse> => {
     try {
-        const { error } = await supabase.auth.signUp({
+        const supabase = await createClient();
+
+        const { data, error } = await supabase.auth.signUp({
             email: formData.email,
             password: formData.password,
             options: {
                 data: {
-                    firstname: formData.firstname,
-                    lastname: formData.lastname,
+                    firstname: formData.firstname.trim(),
+                    lastname: formData.lastname.trim(),
                 },
-                emailRedirectTo: '/login',
             },
         });
 
-        if (error) handleSupabaseError(error, 'signup');
+        console.log({ data, error });
 
-        revalidatePath('/');
+        if (error) {
+            console.error('Signup error:', error.message);
+
+            // Handle specific signup errors
+            if (error.message.includes('already registered')) {
+                return {
+                    status: 409,
+                    message: 'An account with this email already exists',
+                };
+            }
+
+            return {
+                status: 400,
+                message: sanitizeAuthError(error),
+            };
+        }
+
+        revalidatePath('/', 'layout');
+
         return {
             status: 200,
-            message: 'Please check your email to verify your account.',
+            message: SIGNUP_SUCCESS,
         };
     } catch (error) {
-        handleSupabaseError(error, 'signup');
+        console.error('Unexpected signup error:', error);
+        return {
+            status: 500,
+            message: GENERIC_SERVER_ERROR,
+        };
     }
 };
 
-const signout = async () => {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.signOut();
-    if (error) handleSupabaseError(error, 'signout');
-    revalidatePath('/');
+// Signout action
+const signout = async (): Promise<void> => {
+    try {
+        const supabase = await createClient();
+        const { error } = await supabase.auth.signOut();
+
+        if (error) {
+            console.error('Signout error:', error);
+            throw error;
+        }
+
+        revalidatePath('/', 'layout');
+    } catch (error) {
+        console.error('Failed to sign out:', error);
+        throw new Error('Failed to sign out. Please try again.');
+    }
+
     redirect('/login');
+};
+
+// Email confirmation handler
+const verifyEmail = async (email: string, token: string): Promise<ActionResponse> => {
+    try {
+        const supabase = await createClient();
+
+        const { error } = await supabase.auth.verifyOtp({
+            email,
+            token,
+            type: 'email',
+        });
+
+        if (error) {
+            console.error('Email verification error:', error);
+            return {
+                status: 400,
+                message: 'Invalid or expired verification link',
+            };
+        }
+
+        revalidatePath('/', 'layout');
+
+        return {
+            status: 200,
+            message: 'Email verified successfully',
+        };
+    } catch (error) {
+        console.error('Unexpected verification error:', error);
+        return {
+            status: 500,
+            message: GENERIC_SERVER_ERROR,
+        };
+    }
+};
+
+const resendVerificationEmail = async (email: string): Promise<ActionResponse> => {
+    try {
+        const supabase = await createClient();
+        const { error } = await supabase.auth.resend({
+            type: 'signup',
+            email,
+        });
+        if (error) {
+            console.error('Email verification error:', error);
+            return {
+                status: 400,
+                message: 'Invalid or expired verification link',
+            };
+        }
+
+        revalidatePath('/', 'layout');
+
+        return {
+            status: 200,
+            message: 'Email verified successfully',
+        };
+    } catch (error) {
+        console.error('Unexpected verification error:', error);
+        return {
+            status: 500,
+            message: GENERIC_SERVER_ERROR,
+        };
+    }
 };
 
 const fetchUser = async (): Promise<User | null> => {
@@ -91,7 +243,7 @@ const fetchUser = async (): Promise<User | null> => {
         } = await supabase.auth.getUser();
         return user || null;
     } catch (error) {
-        handleSupabaseError(error, 'fetch user');
+        sanitizeAuthError(error);
         return null;
     }
 };
@@ -109,7 +261,7 @@ const fetchProfile = async (): Promise<Profile | null> => {
 
         return data || null;
     } catch (error) {
-        handleSupabaseError(error, 'fetch profile');
+        sanitizeAuthError(error);
     }
 
     return null;
@@ -268,6 +420,8 @@ export {
     login,
     signup,
     signout,
+    verifyEmail,
+    resendVerificationEmail,
     fetchUser,
     fetchProfile,
     fetchTrendingMedia,

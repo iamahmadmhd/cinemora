@@ -1,6 +1,6 @@
 'use client';
 
-import { Pagination } from '@heroui/react';
+import { Pagination } from '@heroui/pagination';
 import { MediaCard } from './ui/media-card';
 import { Skeleton } from './ui/skeleton';
 import { MediaBaseInterface } from '@/types/types';

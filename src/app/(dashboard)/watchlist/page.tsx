@@ -1,6 +1,12 @@
 import { fetchUser } from '@/app/actions';
 import { WatchlistTable } from '@/components/watchlist-table';
 import { createClient } from '@/utils/supabase/server';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Watchlist - Cinemora',
+    description: 'Browse your favorite movies and shows on Cinemora and add them to your watchlist',
+};
 
 export default async function WatchlistPage() {
     const supabase = await createClient();

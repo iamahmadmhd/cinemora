@@ -1,5 +1,11 @@
 import { fetchMovies } from '@/app/actions';
 import { MediaListingSection } from '@/components/media-listing-section';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Movies - Cinemora',
+    description: 'Browse your favorite movies on Cinemora and add them to your watchlist',
+};
 
 export default async function MoviePage() {
     return (

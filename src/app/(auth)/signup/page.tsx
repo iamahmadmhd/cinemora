@@ -1,6 +1,12 @@
 import { SignupForm } from '@/components/forms/signup-form';
 import { Link } from '@heroui/link';
 import NextLink from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Sign Up - Cinemora',
+    description: 'Browse your favorite TV shows on Cinemora and add them to your watchlist',
+};
 
 export default function SignUpPage() {
     return (

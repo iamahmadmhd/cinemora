@@ -30,7 +30,7 @@ export function VerifyForm({ email }: { email: string }) {
         register,
         handleSubmit,
         reset,
-        formState: { errors, isSubmitting },
+        formState: { isSubmitting },
     } = useForm<VerifyFormValues>({
         mode: 'onBlur',
         defaultValues: {

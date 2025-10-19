@@ -1,5 +1,11 @@
 import { VerifyForm } from '@/components/forms/verify-form';
 import { ResendOTP } from '@/components/ui/resend-otp';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Verify Email - Cinemora',
+    description: 'Browse your favorite TV shows on Cinemora and add them to your watchlist',
+};
 
 export default async function LoginPage({
     searchParams,

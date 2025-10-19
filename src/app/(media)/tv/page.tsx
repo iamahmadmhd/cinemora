@@ -1,5 +1,11 @@
 import { fetchTVShows } from '@/app/actions';
 import { MediaListingSection } from '@/components/media-listing-section';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'TV Shows - Cinemora',
+    description: 'Browse your favorite TV shows on Cinemora and add them to your watchlist',
+};
 
 export default async function TVShowsPage() {
     return (

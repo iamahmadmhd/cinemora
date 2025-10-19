@@ -1,6 +1,12 @@
 import { LoginForm } from '@/components/forms/login-form';
 import { Link } from '@heroui/link';
+import { Metadata } from 'next';
 import NextLink from 'next/link';
+
+export const metadata: Metadata = {
+    title: 'Login - Cinemora',
+    description: 'Browse your favorite TV shows on Cinemora and add them to your watchlist',
+};
 
 export default function LoginPage() {
     return (

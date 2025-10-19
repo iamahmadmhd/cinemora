@@ -2,6 +2,21 @@ import { fetchTVShowById } from '@/app/actions';
 import { HeroDetailSection } from '@/components/hero-detail-section';
 import { MediaDetailSection } from '@/components/media-detail-section';
 import { getDisplayCountryNames } from '@/utils/helpers';
+import { Metadata } from 'next';
+
+type Props = {
+    params: Promise<{ id: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { id: showId } = await params;
+    const { title, overview } = await fetchTVShowById(showId);
+    return {
+        title: `${title} - Cinemora`,
+        description: overview,
+    };
+}
 
 export default async function MoviePage({ params }: { params: Promise<{ id: string }> }) {
     const { id: showId } = await params;

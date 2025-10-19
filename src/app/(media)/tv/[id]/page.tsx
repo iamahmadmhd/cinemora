@@ -2,9 +2,15 @@ import { fetchTVShowById } from '@/app/actions';
 import { HeroDetailSection } from '@/components/hero-detail-section';
 import { MediaDetailSection } from '@/components/media-detail-section';
 import { getDisplayCountryNames } from '@/utils/helpers';
+import { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-    const { id: showId } = params;
+type Props = {
+    params: Promise<{ id: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { id: showId } = await params;
     const { title, overview } = await fetchTVShowById(showId);
     return {
         title: `${title} - Cinemora`,

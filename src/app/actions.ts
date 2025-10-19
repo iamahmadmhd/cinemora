@@ -13,7 +13,7 @@ import {
     TVShowInterface,
     TVShowMedia,
 } from 'src/types/types';
-import { EmailOtpType, User } from '@supabase/supabase-js';
+import { User } from '@supabase/supabase-js';
 import { Profile } from '@/providers/use-auth';
 import { SearchParams } from '@/components/media-listing-section';
 

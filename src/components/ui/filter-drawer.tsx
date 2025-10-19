@@ -8,7 +8,7 @@ import {
     DrawerFooter,
     DrawerBodyProps,
 } from '@heroui/drawer';
-import { Autocomplete, AutocompleteSection, AutocompleteItem } from '@heroui/autocomplete';
+import { Autocomplete, AutocompleteItem } from '@heroui/autocomplete';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { countries, languages } from 'countries-list';
